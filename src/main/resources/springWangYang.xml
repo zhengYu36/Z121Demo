@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	<!--<aop:aspectj-autoproxy/>-->
+
+	<!--<bean id = "inter" class = "com.spring.learn.MyInterceptor"></bean>-->
+	<!--<bean id = "wy" class = "com.spring.learn.WangYang"></bean>-->
+	<bean id="person" class="com.demo.bean.Person">
+		<property name="age" value="36" />
+		<property name="text" value="xiaoyu" />
+	</bean>
+
+</beans>

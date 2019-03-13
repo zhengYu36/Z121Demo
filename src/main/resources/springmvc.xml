@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<!-- 启用spring mvc 注解 -->
+	<mvc:annotation-driven />
+
+	<context:annotation-config />
+
+	<!-- 对静态资源文件的访问  -->    
+	<!--<mvc:default-servlet-handler/>-->
+	<!-- 用上面的配置，则表示 jquery 文件默认在webapp 根目录下面，如果是放到
+	WEB-INF 下面则需要下面这种写法，当时一般不推荐，因为 WEB-INF 里面主要是给接口访问的
+	但是spring boot 不需要配置这个，它默认就会获取了-->
+	<mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
+	
+	<!-- 扫描controller（controller层注入） -->
+	<context:component-scan base-package="com.zy.controller" />
+
+	<!-- 对模型视图添加前后缀 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/view/" p:suffix=".jsp" />
+</beans>

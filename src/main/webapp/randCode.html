@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+    <script src="jquery.js"></script>
+    <script type="text/javascript">
+        var log = console.log;
+        function refresh() {
+            var url = $("#basePath").val() + "user/check.jpg?number=" + Math.random();
+            $("#img").attr("src", url);
+        }
+    </script>
+</head>
+<body>
+<!--<a href="/downloadFile?fileName=a123.jpg">点击下载</a><br><br>-->
+验证码:
+<img id="img" src="/user/check.jpg" onclick="refresh()">
+</body>
+</html>

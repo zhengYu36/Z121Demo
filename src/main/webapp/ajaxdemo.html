@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax 的简单使用</title>
+    <script src="jquery.js"></script>
+    <script type="text/javascript">
+        var log = console.log;
+        $(function () {
+            log('demo start...');
+
+            var post_data = [];
+            var data1 = {"MDM_TYPE":"333"};
+            var data2 = {"MDM_TYPE":"444"};
+            post_data.push(data1);
+            post_data.push(data2);
+
+
+            $.ajax({
+                url: "http://localhost:8700/v1/api/ebs/materiel",
+                type: "post",
+                cache: false,
+                dataType: 'JSON',
+                contentType: "application/json",
+                data: JSON.stringify(post_data),  //转换为json字符串
+                success: function (result) {
+                    log("success:"+result)
+                },error:function (result) {
+                    log("error:"+result)
+                }
+            });
+        })
+    </script>
+</head>
+
+<body>
+<div id="test-highlight1">
+    <p>ajax json数组的简单使用</p>
+</div>
+</body>
+
+</html>
