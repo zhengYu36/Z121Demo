@@ -40,6 +40,9 @@ public class OneStringUtils {
 
     /**
      * 处理包装类，把包装类转换为自己需要的格式
+     * 属性名-属性类型
+     * eg:
+     * name-string
      */
     public static String parsePageClass(String fieldName, String typeName) {
         StringBuilder str = new StringBuilder();
@@ -79,14 +82,35 @@ public class OneStringUtils {
        if("string".equals(jdbcType)){
            oracleType = "VARCHAR";
        }
-       if("int".equals(jdbcType) || "double".equals(jdbcType) || "float".equals(jdbcType)){
+       if("int".equals(jdbcType) || "double".equals(jdbcType)
+               || "float".equals(jdbcType)|| "boolean".equals(jdbcType)){
             oracleType = "NUMERIC";
        }
        if("date".equals(jdbcType)){
-           oracleType = "DATE";
+           oracleType = "TIMESTAMP";
        }
 
        return oracleType;
+    }
+
+    /**
+     *  生成数据类型学
+     */
+    //有的长度都需要自定义，所以我用?代替
+    public static String produceTypeToOracleType(String jdbcType) {
+        String oracleType ="";
+        if("string".equals(jdbcType)){
+            oracleType = "VARCHAR2(?)";
+        }
+        if("int".equals(jdbcType) || "double".equals(jdbcType) || "float".equals(jdbcType)){
+            //整数部位有几位，小数部位有几位
+            oracleType = "NUMBER(?,?)";
+        }
+        if("date".equals(jdbcType)){
+            oracleType = "DATE";
+        }
+
+        return oracleType;
     }
 
     public static void main(String[] args) {
