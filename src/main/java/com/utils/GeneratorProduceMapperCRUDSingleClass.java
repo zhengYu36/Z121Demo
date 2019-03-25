@@ -13,7 +13,7 @@ import java.util.List;
  * <li>创建时间 : 2019/3/13 13:37</li>
  * <li>修改记录 : 无</li>
  * </ul>
- * 一个类生成，不需要排除
+ * 一个类的操作，不需要排除其他字段，也不需要排除其他字段的相关数据
  *
  * @author zhengyu
  */
@@ -22,10 +22,10 @@ public class GeneratorProduceMapperCRUDSingleClass {
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
     //schema 指定数据库
-    public static String TABLENAME = "YJ_CLASSES_TIME_DETAIL";
+    public static String TABLENAME = "YJ_ALARM_PUSH";
 
     public static void main(String[] args) throws Exception {
-        Class cmc = Class.forName("peccancy.ClassesTimeDetail");
+        Class cmc = Class.forName("peccancy.AlarmPush");
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 
@@ -81,6 +81,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
 
     public static String produceSqlMethod(String schema, String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
+        str.append(" CREATE TABLE \""+schema+"\".\""+tableName+"\"  ( \n");
         //循环迭代数据
         for (int i = 0; i < fields.size(); i++) {
             String[] split = fields.get(i).split("-");

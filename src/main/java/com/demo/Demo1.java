@@ -2,9 +2,6 @@ package com.demo;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * <ul>
@@ -30,6 +27,7 @@ public class Demo1 {
         System.out.println( simpleDateFormat.format(calendar.getTime()));
 
         //比较时间是否有一年的哈，
+
 
     }
 

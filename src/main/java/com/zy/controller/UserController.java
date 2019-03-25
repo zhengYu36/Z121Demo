@@ -2,17 +2,21 @@ package com.zy.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.demo.bean.DemoMaterial;
+import com.utils.BasicJBZRestConfig;
 import com.utils.CaptchaUtil;
 import com.zy.domain.User;
 import com.zy.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -30,8 +34,8 @@ import java.util.List;
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    //protected final HttpHeaders headers = BasicJBZRestConfig.getHeaders();
-    //protected RestTemplate restTemplate = BasicJBZRestConfig.getRestTemplate();
+    protected final HttpHeaders headers = BasicJBZRestConfig.getHeaders();
+    protected RestTemplate restTemplate = BasicJBZRestConfig.getRestTemplate();
     @Resource
     ApplicationContext applicationContext;
     @Resource
@@ -166,8 +170,8 @@ public class UserController {
 
         jsonx = "[{\"MDM_TYPE111\":\"gggg\"},{\"MDM_TYPE\":\"xxxx\"}]";
         //数据是要放到http中的哈
-        //HttpEntity<String> httpEntity = new HttpEntity<>(jsonx, headers);
-        //String str = restTemplate.postForObject("http://127.0.0.1:8700/v1/api/ebs/materiel", httpEntity, String.class);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonx, headers);
+        String str = restTemplate.postForObject("http://127.0.0.1:8700/v1/api/ebs/materiel", httpEntity, String.class);
         //System.out.println("xxx:" + str);
     }
 
