@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class GeneratorProduceMapperCRUDSingleClass {
 
+    //测试注释
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
     //schema 指定数据库
