@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.demo.bean.DemoMaterial;
 import com.utils.BasicJBZRestConfig;
 import com.utils.CaptchaUtil;
+import com.zy.domain.DemoA;
 import com.zy.domain.User;
 import com.zy.service.UserService;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     protected final HttpHeaders headers = BasicJBZRestConfig.getHeaders();
     protected RestTemplate restTemplate = BasicJBZRestConfig.getRestTemplate();
+
     @Resource
     ApplicationContext applicationContext;
     @Resource
@@ -193,5 +195,17 @@ public class UserController {
     public String update3() {
         String str = "gtttttttttx";
         return str;
+    }
+
+    /**
+     * applicationContext的使用
+     */
+    @RequestMapping("/ope4")
+    @ResponseBody
+    public String ope4() throws Exception{
+        System.out.println("xxbbbbxxxxx1111111");
+        applicationContext.publishEvent(new DemoA(this));
+        System.out.println("xxxxx2222");
+        return "xxxxx";
     }
 }  

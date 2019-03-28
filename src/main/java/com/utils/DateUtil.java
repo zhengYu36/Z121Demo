@@ -768,4 +768,14 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**
+     * 时间戳转换为date格式
+     * @return
+     */
+    public static Date timeStamp(long time){
+        Date date = new Date();
+        date.setTime(time);
+        return date;
+    }
+
 }

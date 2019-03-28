@@ -9,9 +9,9 @@
     <changeSet id="36" author="zy">
 
 
-        <sql dbms="mysql" >
+       <!-- <sql dbms="mysql" >
             insert into test2.demo_back values(22,'axx',333);
-        </sql>
+        </sql>-->
 
     </changeSet>
 

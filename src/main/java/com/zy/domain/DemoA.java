@@ -14,8 +14,10 @@ import org.springframework.context.ApplicationEvent;
  */
 public class DemoA extends ApplicationEvent {
 
-    public DemoA(Object source) {
+    public DemoA(Object source) throws Exception{
         super(source);
-        System.out.println("ApplicationEvent start...");
+        Thread.sleep(3000);
+        System.out.println("111ApplicationEvent start...");
+        //throw new Exception("aaa");
     }
 }
