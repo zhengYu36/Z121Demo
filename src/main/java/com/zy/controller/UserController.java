@@ -128,7 +128,7 @@ public class UserController {
     }
 
     @RequestMapping("/index")
-    public ModelAndView getabc(@RequestParam("id") int id, HttpServletRequest request) {
+    public void getabc(@RequestParam("id") int id, HttpServletRequest request) {
 
         Enumeration<String> parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
@@ -142,7 +142,6 @@ public class UserController {
         ModelAndView mav = new ModelAndView("index");
         User user = userService.selectUserById(id);
         mav.addObject("user", user);
-        return mav;
     }
 
     /**
@@ -184,7 +183,7 @@ public class UserController {
     @RequestMapping("/update2")
     @ResponseBody
     public int find() {
-        return userService.updateProperty("aaa","55555");
+        return userService.updateProperty("aaa", "55555");
     }
 
     /**
@@ -202,10 +201,17 @@ public class UserController {
      */
     @RequestMapping("/ope4")
     @ResponseBody
-    public String ope4() throws Exception{
-        System.out.println("xxbbbbxxxxx1111111");
+    public String ope4(String id) throws Exception {
+        System.out.println("ope4 start...");
         applicationContext.publishEvent(new DemoA(this));
-        System.out.println("xxxxx2222");
-        return "xxxxx";
+        System.out.println("ope4 end...");
+        return "hello ope4";
     }
+
+
+ /*   @RequestMapping("/vlt")
+    @Bean
+    public String vlt(String id) throws Exception {
+        return "hello ope4";
+    }*/
 }  

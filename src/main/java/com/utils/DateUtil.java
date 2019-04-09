@@ -778,4 +778,25 @@ public class DateUtil {
         return date;
     }
 
+    /**
+     * format date
+     *
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String formatDate2(Date date, String pattern) throws Exception {
+        String strDate = null;
+        try {
+            if (pattern == null) {
+                pattern = "yyyy-MM-dd";
+            }
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            strDate = format.format(date);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return strDate;
+    }
+
 }

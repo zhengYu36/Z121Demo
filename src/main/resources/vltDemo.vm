@@ -1,0 +1,8 @@
+<html>
+<body>
+#set($num=10)
+#foreach($ref in $num)
+hello $ref
+#end
+</body>
+<html>

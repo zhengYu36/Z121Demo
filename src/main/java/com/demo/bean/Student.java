@@ -9,6 +9,8 @@ public class Student implements Comparable {
     private int age;
     private String password;
 
+
+
     List<Student> list = new ArrayList<>();
 
     public List<Student> getList() {

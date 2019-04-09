@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * <li>创建时间 : 2019/3/28 10:41</li>
  * <li>修改记录 : 无</li>
  * </ul>
- * 类说明： 关于 lambda 的 stream流的学习
+ * 类说明： 关于 lambda 的 stream流的学习 这个可以参考url即可
  * 参考相关url: https://www.cnblogs.com/andywithu/p/7404101.html
  *
  * @author zhengyu
@@ -31,14 +31,14 @@ public class StreamDemo {
         System.out.println(stuList);
 
         List<String> studentList = stuList.stream()
-                .filter(x -> x.getScore() > 85)
+                .filter(x->x.getScore()>85)
                 .sorted(Comparator.comparing(Student::getScore).reversed())
                 .map(Student::getName)
                 .collect(Collectors.toList());
         System.out.println(studentList);
 
         List students = stuList.stream()
-                .filter(x -> x.getScore() > 85)
+                .filter(x->x.getScore()>85)
                 .sorted(Comparator.comparing(Student::getName).reversed())
                 .limit(3)
                 .collect(Collectors.toList());

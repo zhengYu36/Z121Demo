@@ -26,9 +26,9 @@ public class NumberRegular {
 
     public static void main(String[] args) {
         //循环人数
-        String str = "111";
+        String str = "11111;bbb;ccc";
         String[] split = str.split(";");
-        List<String> classesBatch = getClassesBatch(split, 5, 2);
+        List<String> classesBatch = getClassesBatch(split, 5, 1);
         classesBatch.forEach(i-> System.out.println(i));
 
         //这里可以依次添加时间
@@ -46,6 +46,13 @@ public class NumberRegular {
      */
     public static List<String> getClassesBatch(String[] classLists, int day, int rate) {
         NUM = classLists.length - 1; //获取总长度
+        if(NUM == 0){
+            String old = classLists[0];
+            classLists = new String[2];
+            classLists[0] = old;
+            classLists[1] = old;
+
+        }
         List<String> list = new ArrayList<>();
         StringBuffer tempStr = new StringBuffer("");
         //默认下标,当前值向的下标
