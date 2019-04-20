@@ -17,6 +17,9 @@ public class Student{
         this.score = score;
     }
 
+    public Student() {
+    }
+
     @Override
     public String toString() {
         return "Student{" +

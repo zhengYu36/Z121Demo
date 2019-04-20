@@ -25,8 +25,12 @@
 </script>
 <body>
 <h2>Hello 小宇哥!</h2>
-用户名： ${user.userName}<br>
-密码：${user.userPassword}<br>
+<%--用户名： ${user.userName}<br>
+密码：${user.userPassword}<br>--%>
+用户名： ${user.name}<br>
+
+密码：${student.name}<br>
+
 验证码:
 <input id="randCode" placeholder="请输入验证码" tabindex=3 style="display: inline;"
        name="randCode" type="text" title="" value=""/>

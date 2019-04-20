@@ -17,11 +17,11 @@ public class listener3 implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("xxxxx");
+        System.out.println("listener3 init");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        System.out.println("xxxxx2222");
+        System.out.println("listener3 destroy");
     }
 }

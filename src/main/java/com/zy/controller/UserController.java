@@ -2,6 +2,7 @@ package com.zy.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.demo.bean.DemoMaterial;
+import com.demo.lambda.Student;
 import com.utils.BasicJBZRestConfig;
 import com.utils.CaptchaUtil;
 import com.zy.domain.DemoA;
@@ -195,6 +196,15 @@ public class UserController {
         String str = "gtttttttttx";
         return str;
     }
+
+    @RequestMapping("/update4")
+    public ModelAndView update4(Student student) {
+        ModelAndView result = new ModelAndView("index");
+        Student student1 = new Student("adsf",11d);
+        result.addObject("user", student1);
+        return result;
+    }
+
 
     /**
      * applicationContext的使用

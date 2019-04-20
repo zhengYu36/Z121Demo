@@ -27,6 +27,13 @@ public class Student implements Comparable {
         this.password = password;
     }
 
+    public Student(String name, int age, String password, List<Student> list) {
+        this.name = name;
+        this.age = age;
+        this.password = password;
+        this.list = list;
+    }
+
     public Student() {
     }
 

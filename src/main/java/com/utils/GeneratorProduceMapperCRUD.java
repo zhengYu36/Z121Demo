@@ -30,10 +30,10 @@ public class GeneratorProduceMapperCRUD {
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
     //schema 指定数据库
-    public static String TABLENAME = "YJ_CLASSES_TIME_DETAIL";
+    public static String TABLENAME = "YJ_MONITOR_MATRIX";
 
     public static void main(String[] args) throws Exception {
-        Class cmc = Class.forName("peccancy.ClassesTimeDetail");
+        Class cmc = Class.forName("peccancy.MonitorMatrix");
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 

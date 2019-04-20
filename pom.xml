@@ -255,6 +255,16 @@
             <version>2.2.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+        <!-- 这个好像由于版本问题，不能在官方下载，但是可以从openjdk 下载相关源码 -->
+
 
     </dependencies>
 

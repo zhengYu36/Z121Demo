@@ -75,17 +75,20 @@
     <context:component-scan base-package="com.zy.service,com.zy.quartz"/>
 
 
+<!--
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
         <property name="dataSource" ref="dataSource"/>
         <property name="changeLog" value="classpath:liquibase/db-changelog.xml"/>
-        <!--
+        &lt;!&ndash;
         contexts specifies the runtime contexts to use.
-        -->
+        &ndash;&gt;
         <property name="contexts" value="test, production"/>
     </bean>
+-->
 
-    <!-- 定时器 -->
+    <!-- 定时器配置-->
     <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
     <bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"></bean>
+
 
 </beans>
