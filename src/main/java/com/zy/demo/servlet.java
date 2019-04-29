@@ -20,8 +20,13 @@ import java.io.IOException;
 public class servlet  extends HttpServlet {
 
     @Override
+    public void init() throws ServletException {
+        System.out.println("servlet init:");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        System.out.println("获取相关路径");
+        System.out.println("servlet :获取相关路径");
         System.out.println(httpServletRequest.getRequestURL());
         super.doPost(httpServletRequest,httpServletResponse);
     }

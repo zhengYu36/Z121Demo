@@ -15,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -87,7 +89,6 @@ public class UserController {
     @RequestMapping("/findUserByID")
     @ResponseBody
     public User find(@RequestParam("id") int id) {
-
         User user = userService.selectUserById(id);
         return user;
     }
@@ -192,19 +193,44 @@ public class UserController {
      */
     @RequestMapping("/update3")
     @ResponseBody
-    public String update3() {
-        String str = "gtttttttttx";
-        return str;
+    public Student update3(HttpServletRequest request, HttpServletResponse response) {
+        //Student std = new Student(student.getName(), student.getScore() + 13);
+        Student std = new Student("adsf", 11d);
+        Cookie cookie = new Cookie("name_test", "value_test");//创建新cookie
+        cookie.setMaxAge(5 * 60);// 设置存在时间为5分钟
+        cookie.setPath("/");//设置作用域
+
+        Cookie cookie1 = new Cookie("cookie", "ggggg");//创建新cookie
+        cookie1.setMaxAge(5 * 60);// 设置存在时间为5分钟
+        cookie1.setPath("/");//设置作用域
+        response.addCookie(cookie);//将cookie添加到response的cookie数组中返回给客户端
+        response.addCookie(cookie1);
+        return std;
+    }
+
+    @RequestMapping("/update31")
+    @ResponseBody
+    public Student update31() {
+        //Student std = new Student(student.getName(), student.getScore() + 13);
+        Student std = new Student("adsf11", 11d);
+        return std;
     }
 
     @RequestMapping("/update4")
     public ModelAndView update4(Student student) {
         ModelAndView result = new ModelAndView("index");
-        Student student1 = new Student("adsf",11d);
+        Student student1 = new Student("adsf", 11d);
         result.addObject("user", student1);
         return result;
     }
 
+    @RequestMapping("/update5/{id}")
+    @ResponseBody
+    public Student update5(@PathVariable String id) {
+        System.out.println("id is:"+id);
+        Student std = new Student("adsf", 11d);
+        return std;
+    }
 
     /**
      * applicationContext的使用
