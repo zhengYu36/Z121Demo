@@ -53,16 +53,19 @@ public class GeneratorProduceMapperCRUD {
             String str = OneStringUtils.parsePageClass(allField.getName(), allField.getType().toString());
             set.add(str);
         }
-        String str = GeneratorProduceMapperCRUD.createMapperXML("", TABLENAME, set);
+        String str = GeneratorProduceMapperCRUD.createMapperXML(TABLENAME, set);
         System.out.println(str);
+
+        //创建相关 controller等类
     }
 
     //创建 xml文件
-    public static String createMapperXML(String path, String tableName, List<String> fields) {
+    public static String createMapperXML(String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
 
         //创建crud
-        String ss = insertMethod(path, tableName, fields);
+        //创建insert
+        String ss = insertMethod(tableName, fields);
         str.append("\n--------------insert start------------------\n");
         str.append(ss);
         str.append("\n--------------insert   end------------------\n");
@@ -88,7 +91,6 @@ public class GeneratorProduceMapperCRUD {
         str.append("\n--------------createsql  start------------------\n");
         str.append(produceSqlMethod(SCHEMANAME,tableName,fields));
         str.append("\n--------------createsql   end------------------\n");
-
 
         //创建xml尾部
         //str.append("</mapper>");
@@ -200,7 +202,7 @@ public class GeneratorProduceMapperCRUD {
         return str.toString();
     }
 
-    private static String insertMethod(String path, String tableName, List<String> fields) {
+    private static String insertMethod(String tableName, List<String> fields) {
         //创建insert
         StringBuffer str = new StringBuffer();
         str.append("insert into " + tableName + "  \n");

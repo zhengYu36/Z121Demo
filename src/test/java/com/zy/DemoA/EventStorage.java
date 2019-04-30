@@ -48,7 +48,7 @@ public class EventStorage {
             try {  
                 wait();  
             } catch (InterruptedException e) {  
-                // TODO Auto-generated catch block  
+                // TODO AutoCreateJavaFile-generated catch block
                 e.printStackTrace();  
             }  
         }  

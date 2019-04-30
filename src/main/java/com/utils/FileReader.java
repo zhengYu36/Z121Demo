@@ -23,12 +23,16 @@ public class FileReader {
 
     }
 
-    public static void writeFile() {
-        //把图片转换为base64
-        String str = WordUtil.ImageToBase64ByLocal("E:\\a1.png");
+    public static void writeFile(String path,String name,String str) {
+        //把图片转换为base64,然后保存
+        //String str = WordUtil.ImageToBase64ByLocal("E:\\a1.png");
         //保存到本地
         try {
-            FileOutputStream fos = new FileOutputStream(new File("E:\\file.txt"));
+            String pathAndName ="";
+            if(path ==null || path.equals("")){
+                pathAndName = "E:/"+name;
+            }
+            FileOutputStream fos = new FileOutputStream(new File(pathAndName));
             OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
             osw.write(str);
             osw.flush();

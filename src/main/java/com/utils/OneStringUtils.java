@@ -94,17 +94,20 @@ public class OneStringUtils {
     }
 
     /**
-     *  生成数据类型学
+     *  生成数据类型
+     *  目前该方法只适用于oracle
      */
-    //有的长度都需要自定义，所以我用?代替
+    //有的长度都需要自定义，所以我用?代替，string 可以默认使用255
     public static String produceTypeToOracleType(String jdbcType) {
         String oracleType ="";
         if("string".equals(jdbcType)){
-            oracleType = "VARCHAR2(?)";
+            oracleType = "VARCHAR2(255)";
         }
         if("int".equals(jdbcType) || "double".equals(jdbcType) || "float".equals(jdbcType)){
             //整数部位有几位，小数部位有几位
-            oracleType = "NUMBER(?,?)";
+            //如果默认没有指定，那么就会获取最大值，
+            // 所有目前我们可以暂时设定一些数据的方式
+            oracleType = "NUMBER(9,3)";
         }
         if("date".equals(jdbcType)){
             oracleType = "DATE";
