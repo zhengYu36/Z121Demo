@@ -26,10 +26,10 @@ public class GeneratorProduceMapperCRUDSingleClass {
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
     //schema 指定数据库
-    public static String TABLENAME = "YJ_ALARM_PUSH";
+    public static String TABLENAME = "YJ_MONITOR_CONFIG_WORKSITE";
 
     public static void main(String[] args) throws Exception {
-        Class cmc = Class.forName("peccancy.AlarmPush");
+        Class cmc = Class.forName("peccancy.MonitorConfigWorksite");
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 
@@ -45,29 +45,56 @@ public class GeneratorProduceMapperCRUDSingleClass {
     }
 
     //创建 xml文件
-    public static String createMapperXML(String path, String tableName, List<String> fields) {
+    public static String createMapperXML(String path, String tableName, List<String> fields) throws Exception{
         StringBuffer str = new StringBuffer();
 
         //创建crud
-        String ss = insertMethod(path, tableName, fields);
+
+        //insert
+        String common = selectCommon(tableName, fields);
+        str.append("\n--------------common start------------------\n");
+        str.append(common);
+        str.append("\n--------------common   end------------------\n");
+
+        //insert
+        String insert = insertMethod(tableName, fields);
         str.append("\n--------------insert start------------------\n");
-        str.append(ss);
+        str.append(insert);
         str.append("\n--------------insert   end------------------\n");
-        //创建select
-        str.append("\n");
-        str.append("\n--------------select  start------------------\n");
-        str.append(selectMethod(tableName, fields));
-        str.append("\n--------------select   end------------------\n");
+
         //创建update
+        String update = updateMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------update  start------------------\n");
-        str.append(updateMethod(tableName, fields));
+        str.append(update);
         str.append("\n--------------update   end------------------\n");
 
+        //创建select
+        String select = selectMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select  start------------------\n");
+        str.append(select);
+        str.append("\n--------------select   end------------------\n");
+
+        //创建select list
+        String selectList = selectListMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select list start------------------\n");
+        str.append(selectList);
+        str.append("\n--------------select list  end------------------\n");
+
+        //创建select byId
+        String selectById = selectByIdMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select byId start------------------\n");
+        str.append(selectById);
+        str.append("\n--------------select byId end------------------\n");
+
         //创建delete
+        String delete = deleteMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------delete  start------------------\n");
-        str.append(deleteMethod(tableName, fields));
+        str.append(delete);
         str.append("\n--------------delete   end------------------\n");
 
         //创建sql语句
@@ -79,6 +106,9 @@ public class GeneratorProduceMapperCRUDSingleClass {
 
         //创建xml尾部
         //str.append("</mapper>");
+        //创建xml文件
+        CreateControllerOther.mapperXMLTemple(common,insert,update,selectList,selectById,delete);
+        //创建xml文件
 
         return str.toString();
     }
@@ -89,14 +119,13 @@ public class GeneratorProduceMapperCRUDSingleClass {
         //循环迭代数据
         for (int i = 0; i < fields.size(); i++) {
             String[] split = fields.get(i).split("-");
-            boolean isflag = false;
             String sb = OneStringUtils.camelToUnderline(split[0]);
             str.append(" \"" + sb.toUpperCase() + "\" " +
                     " " + OneStringUtils.produceTypeToOracleType(split[1]) + ", \n");
         }
         //去掉最后一个 ，
         String shows = str.toString();
-        shows = shows.substring(0, shows.toString().lastIndexOf(","));
+        shows = shows.substring(0, shows.lastIndexOf(","));
         shows += "\n );";
 
         return shows;
@@ -141,6 +170,29 @@ public class GeneratorProduceMapperCRUDSingleClass {
         return str.toString();
     }
 
+    public static String selectCommon(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+
+        //显示字段
+        StringBuffer shows = new StringBuffer();
+        Iterator it = fields.iterator();
+        //这里会把实体的名称转换为驼峰的属性
+        while (it.hasNext()) {
+            String ss = it.next().toString();
+            String[] split = ss.split("-");
+            String sb = OneStringUtils.camelToUnderline(split[0].toString());
+            if (sb.contains("_")) {
+                sb = sb + " as " + split[0];
+            }
+            sb = sb + ", \n";
+            shows.append(sb);
+        }
+        //去掉最后一个 ，
+        String showsa = shows.toString();
+        showsa = showsa.substring(0, showsa.toString().lastIndexOf(","));
+        return showsa;
+    }
+
     public static String selectMethod(String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
 
@@ -166,7 +218,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
         return str.toString();
     }
 
-    private static String insertMethod(String path, String tableName, List<String> fields) {
+    private static String insertMethod(String tableName, List<String> fields) {
         //创建insert
         StringBuffer str = new StringBuffer();
         str.append("insert into " + tableName + "  \n");
@@ -202,6 +254,24 @@ public class GeneratorProduceMapperCRUDSingleClass {
         str.append(vas);
         str.append(" ) \n");
 
+        return str.toString();
+    }
+
+    public static String selectListMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" select \n ");
+        str.append(" <include refid=\"record_column\"/> \n ");
+        str.append(" from " + tableName + "  \n ");
+        str.append(" where 1=1 \n ");
+        return str.toString();
+    }
+
+    public static String selectByIdMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" select \n ");
+        str.append(" <include refid=\"record_column\"/> \n ");
+        str.append(" from " + tableName + " \n ");
+        str.append(" where id=#{id}  \n ");
         return str.toString();
     }
 }

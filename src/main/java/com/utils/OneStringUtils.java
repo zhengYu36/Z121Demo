@@ -113,6 +113,10 @@ public class OneStringUtils {
             oracleType = "DATE";
         }
 
+        if("boolean".equals(jdbcType)){
+            oracleType = "NUMBER(1,0)";
+        }
+
         return oracleType;
     }
 
