@@ -38,7 +38,7 @@ public class GeneratorProduceMapperCRUD {
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 
-        //用List保存数据
+        //用List保存数据，排除掉不需要的属性值
         List<String> set = new ArrayList<>();
         for (int i = 0; i < allFields.length; i++) {
             Field allField = allFields[i];

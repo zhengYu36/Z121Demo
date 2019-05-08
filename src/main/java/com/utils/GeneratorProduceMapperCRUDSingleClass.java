@@ -17,7 +17,7 @@ import java.util.List;
  * 就通过实体来创建相关的查询，
  * 这个是为了没有继承类(或者说是基础类)的实体
  * 有时候是非常实用的东西和方式
- *
+ * <p>
  * 不会排除父类
  *
  * @author zhengyu
@@ -42,12 +42,12 @@ public class GeneratorProduceMapperCRUDSingleClass {
             String str = OneStringUtils.parsePageClass(allField.getName(), allField.getType().toString());
             set.add(str);
         }
-        String str = GeneratorProduceMapperCRUDSingleClass.createMapperXML("", TABLENAME, set);
+        String str = GeneratorProduceMapperCRUDSingleClass.createMapperXML(TABLENAME, set);
         System.out.println(str);
     }
 
     //创建 xml文件
-    public static String createMapperXML(String path, String tableName, List<String> fields) throws Exception{
+    public static String createMapperXML(String tableName, List<String> fields) throws Exception {
         StringBuffer str = new StringBuffer();
 
         //创建crud
@@ -109,7 +109,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
         //创建xml尾部
         //str.append("</mapper>");
         //创建xml文件
-        CreateControllerOther.mapperXMLTemple(common,insert,update,selectList,selectById,delete);
+        CreateControllerOther.mapperXMLTemple(common, insert, update, selectList, selectById, delete);
         //创建xml文件
 
         return str.toString();
@@ -117,7 +117,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
 
     public static String produceSqlMethod(String schema, String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
-        str.append(" CREATE TABLE \""+schema+"\".\""+tableName+"\"  ( \n");
+        str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
         //循环迭代数据
         for (int i = 0; i < fields.size(); i++) {
             String[] split = fields.get(i).split("-");
