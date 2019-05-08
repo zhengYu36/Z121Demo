@@ -1,5 +1,7 @@
 package com.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,10 +23,31 @@ public class CreateControllerOther {
     public static String name = "ManagerPerson";
 
     public static void main(String[] args) throws Exception {
+        CreateFile(PATH,name,true);
+    }
+
+    /**
+     * 生成时间： 2019/5/8 19:48
+     * 方法说明：
+     * 开发人员：zhengyu
+     * @Param: path 存放的路径，需要保存该文件目录存在
+     * @Param: className 类名称，只需要类名称
+     * @Param: isok 该类的service，是否需要创建和编辑等额外属性
+                 true 是需要， false 不需要 ，默认是需要
+     * @return void
+     */
+
+    public static void CreateFile(String path,String className,boolean isok) throws Exception {
+        if(StringUtils.isNotEmpty(path)){
+            PATH = path;
+        }
+        if(StringUtils.isNotEmpty(className)){
+            name = className;
+        }
         //创建模板
         System.out.println("创建模板开始......");
         controllerTemple();
-        serviceTemple(true);
+        serviceTemple(isok);
         mapperTemple();
         //mapperXMLTemple();
         System.out.println("模板创建完成......");

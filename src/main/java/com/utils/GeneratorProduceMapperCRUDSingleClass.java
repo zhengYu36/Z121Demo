@@ -1,5 +1,6 @@
 package com.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
@@ -30,8 +31,33 @@ public class GeneratorProduceMapperCRUDSingleClass {
     //schema 指定数据库
     public static String TABLENAME = "YJ_MONITOR_CONFIG_WORKSITE";
 
+    //schema 指定数据库
+    public static String CLASSNAME = "manager.ManagerPerson";
+
     public static void main(String[] args) throws Exception {
-        Class cmc = Class.forName("peccancy.MonitorConfigWorksite");
+        createSql(CLASSNAME,SCHEMANAME,TABLENAME);
+    }
+
+    /**
+     * 生成时间： 2019/5/8 19:40
+     * 方法说明：
+     * 开发人员：zhengyu
+     * @Param: className 类名称  包名.类名 eg:manager.ManagerPerson
+     * @Param: schemaName 数据库名称
+     * @Param: tableName 表名称
+     * @return void
+     */
+
+    public static void createSql(String className,String schemaName,String tableName)
+            throws Exception {
+
+        if(StringUtils.isNotEmpty(schemaName)){
+            SCHEMANAME = schemaName;
+        }
+        if(StringUtils.isNotEmpty(tableName)){
+            TABLENAME = tableName;
+        }
+        Class cmc = Class.forName(className);
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 
@@ -100,11 +126,13 @@ public class GeneratorProduceMapperCRUDSingleClass {
         str.append("\n--------------delete   end------------------\n");
 
         //创建sql语句
+        String sql = produceSqlMethod(SCHEMANAME, tableName, fields);
+        System.err.println("-- "+tableName+" sql为:");
+        System.err.println(sql);
         str.append("\n");
         str.append("\n--------------createsql  start------------------\n");
-        str.append(produceSqlMethod(SCHEMANAME, tableName, fields));
+        str.append(sql);
         str.append("\n--------------createsql   end------------------\n");
-
 
         //创建xml尾部
         //str.append("</mapper>");
@@ -220,7 +248,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
         return str.toString();
     }
 
-    private static String insertMethod(String tableName, List<String> fields) {
+    public static String insertMethod(String tableName, List<String> fields) {
         //创建insert
         StringBuffer str = new StringBuffer();
         str.append("insert into " + tableName + "  \n");
