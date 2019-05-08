@@ -18,6 +18,8 @@ import java.util.List;
  * 这个是为了没有继承类(或者说是基础类)的实体
  * 有时候是非常实用的东西和方式
  *
+ * 不会排除父类
+ *
  * @author zhengyu
  */
 public class GeneratorProduceMapperCRUDSingleClass {

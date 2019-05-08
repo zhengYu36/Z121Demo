@@ -18,13 +18,13 @@ import java.io.OutputStreamWriter;
 public class CreateControllerOther {
 
     public static String PATH = "D:/javaTemplate/";
-    public static String name = "MonitorConfigPlatformInfo";
+    public static String name = "ManagerPerson";
 
     public static void main(String[] args) throws Exception {
         //创建模板
         System.out.println("创建模板开始......");
         controllerTemple();
-        serviceTemple();
+        serviceTemple(true);
         mapperTemple();
         //mapperXMLTemple();
         System.out.println("模板创建完成......");
@@ -116,8 +116,9 @@ public class CreateControllerOther {
      * 生成时间： 2019/4/30 10:31
      * 方法说明：生产 service
      * 开发人员：zhengyu
+     * @param isok true表示又创建和编辑时间，需要创建，false表示不用创建
      */
-    public static String serviceTemple() throws Exception {
+    public static String serviceTemple(boolean isok) throws Exception {
 
         StringBuilder sb = new StringBuilder();
 
@@ -143,8 +144,16 @@ public class CreateControllerOther {
         sb.append("         " + name + " record = objectMapper.readValue(new JSONObject(recordStr).toString(), " +
                 "" + name + ".class);\n\t");
         sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
+        if(isok){
+            sb.append("             record.setCreateUserId(getUserId());\n\t");
+            sb.append("             record.setCreateDate(new Date());\n\t");
+        }
         sb.append("             mapper.updateRecord(record);\n\t");
         sb.append("         } else {\n\t");
+        if(isok){
+            sb.append("             record.setEditUserId(getUserId());\n\t");
+            sb.append("             record.setEditDate(new Date());\n\t");
+        }
         sb.append("             mapper.saveRecord(record);\n\t");
         sb.append("         }\n\t");
         sb.append(" 		return record;\n\t");

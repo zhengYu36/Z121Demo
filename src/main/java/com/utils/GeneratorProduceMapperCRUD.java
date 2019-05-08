@@ -14,7 +14,8 @@ import java.util.*;
  * 根据实体生产相关对应的mapper.xml文件中的sql(crud文件)
  * 请注意:这些项目是有一个公共模块的父类，所以有的字段需要固定，（这些一般是需要记录操作人，
  * 就是通过c#来直接获取的相关操作）
- * 如果只有一个当地的类那么则不需要排除哈
+ *
+ * 不会排除 父类的一些属性
  *
  * @author zhengyu
  */
@@ -30,10 +31,10 @@ public class GeneratorProduceMapperCRUD {
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
     //schema 指定数据库
-    public static String TABLENAME = "YJ_MONITOR_MATRIX";
+    public static String TABLENAME = "YJ_MANAGER_PERSON";
 
     public static void main(String[] args) throws Exception {
-        Class cmc = Class.forName("peccancy.MonitorMatrix");
+        Class cmc = Class.forName("manager.ManagerPerson");
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
 
@@ -60,43 +61,74 @@ public class GeneratorProduceMapperCRUD {
     }
 
     //创建 xml文件
-    public static String createMapperXML(String tableName, List<String> fields) {
+    public static String createMapperXML(String tableName, List<String> fields) throws Exception{
         StringBuffer str = new StringBuffer();
 
         //创建crud
-        //创建insert
-        String ss = insertMethod(tableName, fields);
+
+        //insert
+        String common = GeneratorProduceMapperCRUDSingleClass.selectCommon(tableName, fields);
+        str.append("\n--------------common start------------------\n");
+        str.append(common);
+        str.append("\n--------------common   end------------------\n");
+
+        //insert
+        String insert = insertMethod(tableName, fields);
         str.append("\n--------------insert start------------------\n");
-        str.append(ss);
+        str.append(insert);
         str.append("\n--------------insert   end------------------\n");
-        //创建select
-        str.append("\n");
-        str.append("\n--------------select  start------------------\n");
-        str.append(selectMethod(tableName,fields));
-        str.append("\n--------------select   end------------------\n");
+
         //创建update
+        String update = updateMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------update  start------------------\n");
-        str.append(updateMethod(tableName,fields));
+        str.append(update);
         str.append("\n--------------update   end------------------\n");
 
+        //创建select
+        String select = selectMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select  start------------------\n");
+        str.append(select);
+        str.append("\n--------------select   end------------------\n");
+
+        //创建select list
+        String selectList = GeneratorProduceMapperCRUDSingleClass.selectListMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select list start------------------\n");
+        str.append(selectList);
+        str.append("\n--------------select list  end------------------\n");
+
+        //创建select byId
+        String selectById = GeneratorProduceMapperCRUDSingleClass.selectByIdMethod(tableName, fields);
+        str.append("\n");
+        str.append("\n--------------select byId start------------------\n");
+        str.append(selectById);
+        str.append("\n--------------select byId end------------------\n");
+
         //创建delete
+        String delete = deleteMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------delete  start------------------\n");
-        str.append(deleteMethod(tableName,fields));
+        str.append(delete);
         str.append("\n--------------delete   end------------------\n");
 
         //创建sql语句
         str.append("\n");
         str.append("\n--------------createsql  start------------------\n");
-        str.append(produceSqlMethod(SCHEMANAME,tableName,fields));
+        str.append(produceSqlMethod(SCHEMANAME, tableName, fields));
         str.append("\n--------------createsql   end------------------\n");
+
 
         //创建xml尾部
         //str.append("</mapper>");
+        //创建xml文件
+        CreateControllerOther.mapperXMLTemple(common,insert,update,selectList,selectById,delete);
+        //创建xml文件
 
         return str.toString();
     }
+
     public static String produceSqlMethod(String schema,String tableName,List<String> fields){
         StringBuffer str = new StringBuffer();
         //这里为什么要单独提出来这里是为了在创建sql的时候，方便查询，因为目前该表这些

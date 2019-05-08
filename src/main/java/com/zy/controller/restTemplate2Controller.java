@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.*;
 import java.util.List;
 
+//获取cookie值
 public class restTemplate2Controller {
 
     protected static final HttpHeaders headers = BasicJBZRestConfig.getHeaders();
