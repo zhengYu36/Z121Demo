@@ -64,12 +64,12 @@ public class CreateControllerOther {
         String str2 = name + "Service";
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" import com.yanjoy.framework.util.sys.State;\n\t");
-        sb.append(" import com.yanjoy.framework.base.BaseController;\n\t");
-        sb.append(" \n\n");
-        sb.append(" ﻿@Controller\n\t");
-        sb.append(" @RequestMapping(\"/{projectId}/server/" + name.toLowerCase() + "\")\n");
-        sb.append(" public class " + str1 + "  extends BaseController{\n\t");
+        sb.append("import com.yanjoy.framework.util.sys.State;\n");
+        sb.append("import com.yanjoy.framework.base.BaseController;\n");
+        sb.append("\n\n");
+        sb.append("﻿@Controller\n");
+        sb.append("@RequestMapping(\"/{projectId}/server/" + name.toLowerCase() + "\")\n");
+        sb.append("public class " + str1 + "  extends BaseController{\n\t");
         sb.append(" \n\t");
         sb.append(" 	@Autowired\n\t");
         sb.append(" 	private " + str2 + " service;\n\t");
@@ -121,8 +121,7 @@ public class CreateControllerOther {
         sb.append("         result.addObject(\"state\", state);\n\t");
         sb.append(" 		return result;\n\t");
         sb.append(" 	}\n\t");
-        sb.append(" }\n\t");
-        sb.append(" 	\n\t");
+        sb.append("}\n");
 
         BufferedWriter bw = null;
         File con = new File(PATH + "" + str1 + ".java");
@@ -149,13 +148,14 @@ public class CreateControllerOther {
         String str3 = name + "Mapper";
 
         sb = new StringBuilder();
-        sb.append(" import org.json.JSONObject;\n\t");
-        sb.append(" import java.text.SimpleDateFormat;\n\t");
-        sb.append(" import java.util.List;\n\t");
-        sb.append(" import org.apache.commons.lang.StringUtils;\n\t");
-        sb.append(" \n\n");
-        sb.append(" ﻿@Service\n");
-        sb.append(" public class " + str2 + "  extends BaseService{\n\t");
+        sb.append("import org.json.JSONObject;\n");
+        sb.append("import java.text.SimpleDateFormat;\n");
+        sb.append("import java.util.List;\n");
+        sb.append("import java.util.Date;\n");
+        sb.append("import org.apache.commons.lang.StringUtils;\n");
+        sb.append("\n\n");
+        sb.append("﻿@Service\n");
+        sb.append("public class " + str2 + "  extends BaseService{\n\t");
         sb.append(" 	\n\t");
         sb.append(" 	@Autowired\n\t");
         sb.append(" 	private " + str3 + " mapper;\n\t");
@@ -198,8 +198,8 @@ public class CreateControllerOther {
         //删除
         sb.append(" 	public void deleteRecord(String id) {\n\t");
         sb.append(" 		mapper.deleteRecord(id);\n\t");
-        sb.append(" 	}\n\t");
-        sb.append(" }\n\t");
+        sb.append(" 	}\n");
+        sb.append("}\n");
 
         BufferedWriter bw = null;
         File con = new File(PATH + "" + str2 + ".java");
@@ -223,7 +223,9 @@ public class CreateControllerOther {
         //String name = name + "Mapper";
         String str3 = name + "Mapper";
         sb = new StringBuilder();
-        sb.append(" public interface " + name + "Mapper {\n\t");
+        sb.append("import java.util.List;\n");
+        sb.append("\n\n");
+        sb.append("public interface " + name + "Mapper {\n\t");
         sb.append(" 	\n\t");
 
         //保存
@@ -243,8 +245,8 @@ public class CreateControllerOther {
 
         //删除
         sb.append(" 	void deleteRecord(String id);\n\t");
-        sb.append(" \n\t");
-        sb.append(" }\n\t");
+        sb.append(" \n");
+        sb.append("}\n");
 
 
         BufferedWriter bw = null;
@@ -273,7 +275,7 @@ public class CreateControllerOther {
                                          String update, String selectList,
                                          String selectById, String delete) throws Exception {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = null;
         String str4 = name + "Mapper";
 
         sb = new StringBuilder();
@@ -287,7 +289,7 @@ public class CreateControllerOther {
 
         //查询公共模块
         sb.append(" 	<sql id=\"record_column\">\n\t");
-        sb.append(" 	    "+commonField+"\n\t");
+        sb.append(" 	    "+commonField+"\n");
         sb.append(" 	</sql>\n\t");
         sb.append(" \n\t");
 
