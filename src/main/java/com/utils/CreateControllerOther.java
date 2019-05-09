@@ -152,9 +152,9 @@ public class CreateControllerOther {
         sb.append("import java.text.SimpleDateFormat;\n");
         sb.append("import java.util.List;\n");
         sb.append("import java.util.Date;\n");
-        sb.append("import org.apache.commons.lang.StringUtils;\n");
-        sb.append("\n\n");
-        sb.append("﻿@Service\n");
+        sb.append("import org.apache.commons.lang.StringUtils;");
+        sb.append("\n\r");
+        sb.append("@Service\n");
         sb.append("public class " + str2 + "  extends BaseService{\n\t");
         sb.append(" 	\n\t");
         sb.append(" 	@Autowired\n\t");
@@ -203,7 +203,7 @@ public class CreateControllerOther {
 
         BufferedWriter bw = null;
         File con = new File(PATH + "" + str2 + ".java");
-        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(con)));
+        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(con),"utf-8"));
         bw.write(sb.toString());
         bw.flush();
         bw.close();
