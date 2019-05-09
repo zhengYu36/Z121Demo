@@ -65,9 +65,9 @@ public class CreateControllerOther {
 
         StringBuilder sb = new StringBuilder();
         sb.append("import com.yanjoy.framework.util.sys.State;\n");
-        sb.append("import com.yanjoy.framework.base.BaseController;\n");
-        sb.append("\n\n");
-        sb.append("﻿@Controller\n");
+        sb.append("import com.yanjoy.framework.base.BaseController;");
+        sb.append("\n\r");
+        sb.append("@Controller\n");
         sb.append("@RequestMapping(\"/{projectId}/server/" + name.toLowerCase() + "\")\n");
         sb.append("public class " + str1 + "  extends BaseController{\n\t");
         sb.append(" \n\t");
@@ -125,7 +125,7 @@ public class CreateControllerOther {
 
         BufferedWriter bw = null;
         File con = new File(PATH + "" + str1 + ".java");
-        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(con)));
+        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(con),"utf-8"));
         bw.write(sb.toString());
         bw.flush();
         bw.close();

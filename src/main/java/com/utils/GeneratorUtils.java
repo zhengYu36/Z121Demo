@@ -37,6 +37,7 @@ public class GeneratorUtils {
                 //创建相关java类
                 CreateControllerOther.CreateFile(null,i,true);
 
+
                 //2.创建xml (xml需要额外创建) 和 sql输出
                 String tableName = "";
                 tableName = OneStringUtils.camelToUnderline(i);

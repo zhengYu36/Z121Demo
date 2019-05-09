@@ -69,7 +69,7 @@ public class GeneratorProduceMapperCRUDSingleClass {
             set.add(str);
         }
         String str = GeneratorProduceMapperCRUDSingleClass.createMapperXML(TABLENAME, set);
-        System.out.println(str);
+        //System.out.println(str);
     }
 
     //创建 xml文件
