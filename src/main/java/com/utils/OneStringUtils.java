@@ -120,6 +120,25 @@ public class OneStringUtils {
         return oracleType;
     }
 
+    /**
+     *
+     * 首字母小写
+     * eg: ManagerPersonBlackHistory 变为 managerPersonBlackHistory
+     * 主要是给接口来使用
+     * * @param param
+     * @return
+     */
+    public static String firstCharLow(String str) throws Exception{
+        if(str.length()<1){
+            throw new Exception("String length length less 1");
+        }
+        String a = str.substring(0,1);
+        String ss = str.substring(1);
+        ss = a.toLowerCase()+ss;
+
+        return ss;
+    }
+
     public static void main(String[] args) {
         String str = "isHavePhotoHH";
         //拆分为 is_Have_Photo的方式

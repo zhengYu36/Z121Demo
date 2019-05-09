@@ -68,7 +68,7 @@ public class CreateControllerOther {
         sb.append("import com.yanjoy.framework.base.BaseController;");
         sb.append("\n\r");
         sb.append("@Controller\n");
-        sb.append("@RequestMapping(\"/{projectId}/server/" + name.toLowerCase() + "\")\n");
+        sb.append("@RequestMapping(\"/{projectId}/server/" + OneStringUtils.firstCharLow(name) + "\")\n");
         sb.append("public class " + str1 + "  extends BaseController{\n\t");
         sb.append(" \n\t");
         sb.append(" 	@Autowired\n\t");
@@ -283,7 +283,7 @@ public class CreateControllerOther {
         sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis" +
                 ".org/dtd/mybatis-3-mapper.dtd\">\n\t");
         sb.append(" \n\n");
-        sb.append("<mapper namespace=\"" + name + "Mapper\">");
+        sb.append("<mapper namespace=\"com.yanjoy.scbim.mp.dao.manager." + name + "Mapper\">");
         sb.append(" \n\t");
         sb.append(" \n\t");
 
@@ -294,25 +294,26 @@ public class CreateControllerOther {
         sb.append(" \n\t");
 
         //新增
-        sb.append(" 	<insert id=\"saveRecord\" parameterType=\"" + name + "\">\n\t");
+        sb.append(" 	<insert id=\"saveRecord\" parameterType=\"com.yanjoy.scbim.mp.entity.manager." + name +
+                "\">\n\t");
         sb.append(" 	    "+insert+"\n\t");
         sb.append(" 	</insert>\n\t");
         sb.append(" \n\t");
 
         //更新
-        sb.append(" 	<update id=\"updateRecord\" parameterType=\"" + name + "\">\n\t");
+        sb.append(" 	<update id=\"updateRecord\" parameterType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
         sb.append(" 	    "+update+"\n\t");
         sb.append(" 	</update>\n\t");
         sb.append(" \n\t");
 
         //查询全部
-        sb.append(" 	<select id=\"queryList\" resultType=\"" + name + "\">\n\t");
+        sb.append(" 	<select id=\"queryList\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
         sb.append(" 	    "+selectList+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");
 
         //根据id查询具体数据
-        sb.append(" 	<select id=\"queryRecordById\" resultType=\"" + name + "\">\n\t");
+        sb.append(" 	<select id=\"queryRecordById\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
         sb.append(" 	    "+selectById+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");
