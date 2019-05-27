@@ -16,45 +16,46 @@ import java.util.List;
  * @author zhengyu
  */
 public class GeneratorUtils {
-    private static String packName = "manager";
+    private static String packName = "other";
 
     //true 不排除  false 排除
-    private static boolean isok = false;
+    private static boolean isok = true;
     public static void main(String[] args) throws Exception{
 
         //0.通过包来扫描获取所属类
         List<String> className = PackageUtil.getClassName(packName);
+        System.out.println("创建模板开始......");
         className.forEach(i->{
             //System.out.println(i);
+            //获取实体名，需要有截取
             i = i.substring(i.lastIndexOf("\\")+1);
-            System.out.println(i);
+            //System.out.println(i);
 
             try {
                 /**
                  * 1.创建相关 java文件
-                 * 需要注意，有2种，一种是没有需要排除属性的，一种是需要排除的
+                 *      a.创建相关java类(包含，controller,service,mapper等)
+                 *      b.mybatis.xml需要读取实体信息后才能进行封装
                  */
-                //创建相关java类
                 CreateControllerOther.CreateFile(null,i,true);
 
-
-                //2.创建xml (xml需要额外创建) 和 sql输出
+                //拼装表名
                 String tableName = "";
                 tableName = OneStringUtils.camelToUnderline(i);
                 tableName = "YJ"+tableName;
                 tableName = tableName.toUpperCase();
-                //默认不排除额外的属性
-                if(isok){
-                    GeneratorProduceMapperCRUDSingleClass.createSql(packName+"."+i,null,tableName);
-                }else{
-                    GeneratorProduceMapperCRUD.createSql(packName+"."+i,null,tableName);
-                }
+
+                //2.创建xml (xml需要额外创建) 和 sql输出
+                //默认不排除额外的属性,
+                GeneratorProduceMapperCRUD.createSql(packName+"."+i,null,tableName,isok);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         });
+
+        System.out.println("模板创建结束......");
 
 
     }

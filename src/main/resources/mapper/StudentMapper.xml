@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zy.dao.StudentDao">
+    <sql id="record_colum">
+        id,
+        name,
+        age
+    </sql>
+
+    <insert id="save">
+        insert into student values(#{student.id},#{name},#{student.age})
+    </insert>
+
+    <update id="update" parameterType="int">
+        update student set name='xxx' where id = #{id}
+    </update>
+
+    <select id="select" resultType="java.util.Map">
+        select id as idx,name as namexx from student where id = #{id}
+    </select>
+
+    <delete id="delete">
+        delete from student where id = #{id}
+    </delete>
+
+    <select id="select2" resultType="java.util.Map">
+        select id,name from student
+        where 1 = 1
+        <choose>
+            <when test="id == 100">
+                and id = 100008
+            </when>
+            <when test="id==200">
+                and id = 100007
+            </when>
+        </choose>
+
+       <!-- <if test="ids!=null">
+            and id in
+            <foreach collection="ids" index="id" open="(" separator=","  close=")" >
+                #{id}
+            </foreach>
+        </if>-->
+
+    </select>
+</mapper>

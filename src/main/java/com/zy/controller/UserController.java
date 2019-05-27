@@ -5,8 +5,11 @@ import com.demo.bean.DemoMaterial;
 import com.demo.lambda.Student;
 import com.utils.BasicJBZRestConfig;
 import com.utils.CaptchaUtil;
+import com.zy.dao.StudentDao;
+import com.zy.dao.UserInfoDao;
 import com.zy.domain.DemoA;
 import com.zy.domain.User;
+import com.zy.domain.UserInfo;
 import com.zy.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +18,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,6 +36,14 @@ import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+
+/**
+ * 1.自定义接口的实现和操作
+ *
+ * @ResponseBody 表示返回的时候是json
+ * @RequestBody 表示请求的时候是json
+ */
 
 @Controller
 public class UserController {
@@ -42,6 +56,12 @@ public class UserController {
     ApplicationContext applicationContext;
     @Resource
     private UserService userService;
+
+    @Resource
+    private StudentDao studentDao;
+
+    @Resource
+    private UserInfoDao userInfoDao;
 
     // 验证的简单生成
     @RequestMapping("/user/check.jpg")
@@ -224,7 +244,7 @@ public class UserController {
     @RequestMapping("/update5/{id}")
     @ResponseBody
     public Student update5(@PathVariable String id) {
-        System.out.println("id is:"+id);
+        System.out.println("id is:" + id);
         Student std = new Student("adsf", 11d);
         return std;
     }
@@ -244,8 +264,52 @@ public class UserController {
     @RequestMapping("/update6")
     public ModelAndView update6(Student stx) {
         ModelAndView result = new ModelAndView();
+        System.out.println("xxx");
         Student student1 = new Student("33333", 11d);
         result.addObject("user11", student1);
         return result;
+    }
+
+    @RequestMapping("/update7")
+    @ResponseBody
+    public String update7(com.zy.domain.Student student) {
+        /*com.zy.domain.Student student = new com.zy.domain.Student();
+        student.setId(1232141);
+        student.setName("小宇哥");
+        student.setAge(23);*/
+        System.out.println("xxxx");
+        if (student.getAge() == 1) {
+            studentDao.save(student, "ds反倒是");
+        } else if (student.getAge() == 2) {
+            studentDao.update(student.getId());
+        } else if (student.getAge() == 3) {
+            List<Map> list = studentDao.select(student.getId().toString());
+            System.out.println(list);
+        } else if (student.getAge() == 4) {
+            studentDao.delete(student.getId());
+        } else if (student.getAge() == 5) {
+
+           List<Integer> lista = new ArrayList<Integer>() {
+                {
+                    add(100007);
+                    add(100008);
+                    add(100009);
+                }
+            };
+            List<Map> list = studentDao.select2("100");
+            System.out.println("xxxx");
+
+            System.out.println(list);
+        }
+
+        return "ok";
+    }
+
+    @RequestMapping("update8")
+    @ResponseBody
+    public String update8(UserInfo userInfo){
+        //Strx;
+        userInfoDao.insert(userInfo);
+        return "ok";
     }
 }  

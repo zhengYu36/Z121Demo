@@ -14,13 +14,14 @@ import java.io.OutputStreamWriter;
  * <li>修改记录 : 无</li>
  * </ul>
  * 类说明：创建Controller类和其他需求类
+ *        需要需要额外新增分页等查询，请配套在 *mapper.xml 中也需要新增
  *
  * @author zhengyu
  */
 public class CreateControllerOther {
 
     public static String PATH = "D:/javaTemplate/";
-    public static String name = "ManagerPerson";
+    public static String name = "ManagerProjectPlan";
 
     public static void main(String[] args) throws Exception {
         CreateFile(PATH,name,true);
@@ -30,14 +31,15 @@ public class CreateControllerOther {
      * 生成时间： 2019/5/8 19:48
      * 方法说明：
      * 开发人员：zhengyu
-     * @Param: path 存放的路径，需要保存该文件目录存在
-     * @Param: className 类名称，只需要类名称
-     * @Param: isok 该类的service，是否需要创建和编辑等额外属性
+     * @param  path 存放的路径，需要保存该文件目录存在
+     * @param  className 类名称，只需要类名称
+     * @param isok 该类的service，是否需要创建和编辑等额外属性(创建就是额外创建创建人等信息，
+     *             编辑就是额外创建编辑人的信息)
                  true 是需要， false 不需要 ，默认是需要
      * @return void
      */
-
     public static void CreateFile(String path,String className,boolean isok) throws Exception {
+
         if(StringUtils.isNotEmpty(path)){
             PATH = path;
         }
@@ -45,12 +47,12 @@ public class CreateControllerOther {
             name = className;
         }
         //创建模板
-        System.out.println("创建模板开始......");
+        //System.out.println("创建模板开始......");
         controllerTemple();
         serviceTemple(isok);
         mapperTemple();
         //mapperXMLTemple();
-        System.out.println("模板创建完成......");
+       // System.out.println("模板创建完成......");
     }
 
     /**

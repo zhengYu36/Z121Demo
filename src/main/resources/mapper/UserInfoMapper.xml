@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zy.dao.UserInfoDao">
+    <sql id="Basic_column">
+        id,
+        name,
+        real_name as realName
+    </sql>
+
+    <insert id="insert">
+        insert into user_info values(#{id},#{name},#{realName})
+    </insert>
+</mapper>

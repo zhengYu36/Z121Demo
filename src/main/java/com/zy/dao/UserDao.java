@@ -21,4 +21,6 @@ public interface UserDao {
     //更新操作
     int updateProperty(@Param(value = "name") String name,@Param(value = "pwd") String pwd);
 
+    int insert2(User user);
+
 }

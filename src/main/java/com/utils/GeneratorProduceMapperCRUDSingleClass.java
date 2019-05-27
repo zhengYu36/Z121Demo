@@ -21,6 +21,8 @@ import java.util.List;
  * <p>
  * 不会排除父类
  *
+ * 已经被整合了，要被废弃
+ *
  * @author zhengyu
  */
 public class GeneratorProduceMapperCRUDSingleClass {
@@ -28,11 +30,11 @@ public class GeneratorProduceMapperCRUDSingleClass {
     //测试注释
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
-    //schema 指定数据库
+    //schema 数据表
     public static String TABLENAME = "YJ_MONITOR_CONFIG_WORKSITE";
 
-    //schema 指定数据库
-    public static String CLASSNAME = "manager.ManagerPerson";
+    //schema
+    public static String CLASSNAME = "manager.ManagerProjectPlan";
 
     public static void main(String[] args) throws Exception {
         createSql(CLASSNAME,SCHEMANAME,TABLENAME);
@@ -42,9 +44,10 @@ public class GeneratorProduceMapperCRUDSingleClass {
      * 生成时间： 2019/5/8 19:40
      * 方法说明：
      * 开发人员：zhengyu
-     * @Param: className 类名称  包名.类名 eg:manager.ManagerPerson
-     * @Param: schemaName 数据库名称
-     * @Param: tableName 表名称
+       * @param className 类名称  包名.类名 eg:manager.ManagerProjectPlan
+     * @param schemaName 数据库名称
+     * @param tableName 表名称
+       * @param tableName 表名称
      * @return void
      */
 

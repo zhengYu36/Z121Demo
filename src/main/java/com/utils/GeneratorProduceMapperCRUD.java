@@ -13,8 +13,10 @@ import java.util.*;
  * <li>修改记录 : 无</li>
  * </ul>
  * 根据实体生产相关对应的mapper.xml文件中的sql(crud文件)
- * 请注意:这些项目是有一个公共模块的父类，所以有的字段需要固定，（这些一般是需要记录操作人，
- * 就是通过c#来直接获取的相关操作）
+ * 请注意:这些项目是有一个公共模块的父类，所以有的字段需要固定，
+ * （这些一般是需要记录操作人，
+ * 就是通过c#来直接获取的相关操作） 这样做是为了兼容一起的，可能稍有些繁杂，
+ * 但是这样也是为了更好 good luck
  *
  * 不会排除 父类的一些属性
  *
@@ -22,7 +24,11 @@ import java.util.*;
  */
 public class GeneratorProduceMapperCRUD {
 
-    //自定义排除属性(就是在mapper 中生成sql中不需要显示的字段)
+    /**
+     * 自定义排除属性(就是在mapper 中生成sql中不需要显示、生成的字段)
+     * 排除的原因是因为在scbim的n项目中，有一个公共父类，里面有类似于创建用户名称，但是在创建sql
+     * 的时候又没有，so，为了和以前的一样所有这样自定义了一个
+     */
     public static String[] REMOVE = {"createUserName", "editUserName", "serialVersionUID"};
 
     //生成oracle的sql语句的时候，需要排除的属性 （这些属性都是固定的），排除它是为了保证它的位置在最前面
@@ -35,25 +41,30 @@ public class GeneratorProduceMapperCRUD {
     public static String TABLENAME = "YJ_MANAGER_PERSON";
 
     //schema 指定数据库
-    public static String CLASSNAME = "manager.ManagerPerson";
+    public static String CLASSNAME = "manager.ManagerProjectPlan";
+
+    public static boolean ISOK = true;
+
 
     public static void main(String[] args) throws Exception {
         //创建sql和xml文件
         //提前出来为一个方法，方便批处理使用
-        createSql(CLASSNAME,SCHEMANAME,TABLENAME);
+        createSql(CLASSNAME,SCHEMANAME,TABLENAME,true);
     }
 
     /**
      * 生成时间： 2019/5/8 19:40
      * 方法说明：
      * 开发人员：zhengyu
-     * @Param: className 类名称  包名.类名 eg:manager.ManagerPerson
-     * @Param: schemaName 数据库名称
-     * @Param: tableName 表名称
+     *  @param className 类名称  包名.类名 eg:manager.ManagerProjectPlan
+     * @param schemaName 数据库名称
+     * @param tableName 表名称
+       * @param isok true表示是继承的baseEntry false则表示不是(就是不需要排除字段)
      * @return void
      */
 
-    public static void createSql(String className,String schemaName,String tableName)
+
+    public static void createSql(String className,String schemaName,String tableName,boolean isok)
             throws Exception {
 
         if(StringUtils.isNotEmpty(schemaName)){
@@ -62,6 +73,8 @@ public class GeneratorProduceMapperCRUD {
         if(StringUtils.isNotEmpty(tableName)){
             TABLENAME = tableName;
         }
+        //用全局变量，方便获取
+        ISOK = isok;
         Class cmc = Class.forName(className);
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
@@ -70,14 +83,18 @@ public class GeneratorProduceMapperCRUD {
         List<String> set = new ArrayList<>();
         for (int i = 0; i < allFields.length; i++) {
             Field allField = allFields[i];
-            boolean isflag = false;
-            for (int j = 0; j < REMOVE.length; j++) {
-                if (REMOVE[j].equals(allField.getName())) {
-                    isflag = true;
-                    break;
+
+            if(ISOK){
+                boolean isflag = false;
+                for (int j = 0; j < REMOVE.length; j++) {
+                    if (REMOVE[j].equals(allField.getName())) {
+                        isflag = true;
+                        break;
+                    }
                 }
+                if (isflag) continue;
             }
-            if (isflag) continue;
+
             //这里可以指定需要排除的字段，例如序列号id字段等
             String str = OneStringUtils.parsePageClass(allField.getName(), allField.getType().toString());
             set.add(str);
@@ -91,54 +108,60 @@ public class GeneratorProduceMapperCRUD {
         StringBuffer str = new StringBuffer();
         //创建crud
         //insert
-        String common = GeneratorProduceMapperCRUDSingleClass.selectCommon(tableName, fields);
+        String common = selectCommon(tableName, fields);
         str.append("\n--------------common start------------------\n");
         str.append(common);
         str.append("\n--------------common   end------------------\n");
 
         //insert
-        String insert = GeneratorProduceMapperCRUDSingleClass.insertMethod(tableName, fields);
+        String insert = insertMethod(tableName, fields);
         str.append("\n--------------insert start------------------\n");
         str.append(insert);
         str.append("\n--------------insert   end------------------\n");
 
         //创建update
-        String update = GeneratorProduceMapperCRUDSingleClass.updateMethod(tableName, fields);
+        String update = updateMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------update  start------------------\n");
         str.append(update);
         str.append("\n--------------update   end------------------\n");
 
         //创建select
-        String select = GeneratorProduceMapperCRUDSingleClass.selectMethod(tableName, fields);
+        String select = selectMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------select  start------------------\n");
         str.append(select);
         str.append("\n--------------select   end------------------\n");
 
         //创建select list
-        String selectList = GeneratorProduceMapperCRUDSingleClass.selectListMethod(tableName, fields);
+        String selectList = selectListMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------select list start------------------\n");
         str.append(selectList);
         str.append("\n--------------select list  end------------------\n");
 
         //创建select byId
-        String selectById = GeneratorProduceMapperCRUDSingleClass.selectByIdMethod(tableName, fields);
+        String selectById = selectByIdMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------select byId start------------------\n");
         str.append(selectById);
         str.append("\n--------------select byId end------------------\n");
 
         //创建delete
-        String delete = GeneratorProduceMapperCRUDSingleClass.deleteMethod(tableName, fields);
+        String delete = deleteMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------delete  start------------------\n");
         str.append(delete);
         str.append("\n--------------delete   end------------------\n");
 
         //创建sql语句 (需要使用自己的)
-        String sql = produceSqlMethod(SCHEMANAME, tableName, fields);
+        String sql = "";
+        if(ISOK){
+            sql = produceSqlMethod(SCHEMANAME, tableName, fields);
+        }else{
+            sql = produceSqlMethodByOrig(SCHEMANAME, tableName, fields);
+        }
+
         System.err.println("-- "+tableName+" sql为:");
         System.err.println(sql);
         str.append("\n");
@@ -195,6 +218,167 @@ public class GeneratorProduceMapperCRUD {
         shows += "\n );";
 
         return shows;
+    }
+
+    public static String produceSqlMethodByOrig(String schema, String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
+        //循环迭代数据
+        for (int i = 0; i < fields.size(); i++) {
+            String[] split = fields.get(i).split("-");
+            String sb = OneStringUtils.camelToUnderline(split[0]);
+            str.append(" \"" + sb.toUpperCase() + "\" " +
+                    " " + OneStringUtils.produceTypeToOracleType(split[1]) + ", \n");
+        }
+        //去掉最后一个 ，
+        String shows = str.toString();
+        shows = shows.substring(0, shows.lastIndexOf(","));
+        shows += "\n );";
+
+        return shows;
+    }
+
+    public static String deleteMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" delete from " + tableName + " where id=#{id} ");
+        return str.toString();
+    }
+
+    public static String updateMethod(String tableName, List<String> fields) {
+
+        StringBuffer str = new StringBuffer();
+        str.append("update " + tableName + " \n");
+        str.append("<set>\n");
+        int num = 0;
+        boolean sym = false;
+        for (int i = 0; i < fields.size(); i++) {
+            String ss = fields.get(i);
+            String[] split = ss.split("-");
+            //转换为下划线格式字符串
+            String sb = OneStringUtils.camelToUnderline(split[0].toString());
+            String yxStr = split[0];
+            num++;
+            if (num == fields.size()) {
+                sym = true;
+            }
+            if (sym) {
+                str.append("<if test=\"" + yxStr + " != null\">" +
+                        "" + sb + "=#{" + yxStr + "}</if>  \n");
+            } else {
+                str.append("<if test=\"" + yxStr + " != null\">" +
+                        "" + sb + "=#{" + yxStr + "},</if>  \n");
+            }
+
+        }
+        str.append("</set>\n");
+        str.append(" where id=#{id} ");
+
+        return str.toString();
+    }
+
+    public static String selectCommon(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+
+        //显示字段
+        StringBuffer shows = new StringBuffer();
+        Iterator it = fields.iterator();
+        //这里会把实体的名称转换为驼峰的属性
+        while (it.hasNext()) {
+            String ss = it.next().toString();
+            String[] split = ss.split("-");
+            String sb = OneStringUtils.camelToUnderline(split[0].toString());
+            if (sb.contains("_")) {
+                sb = sb + " as " + split[0];
+            }
+            sb = sb + ", \n";
+            shows.append(sb);
+        }
+        //去掉最后一个 ，
+        String showsa = shows.toString();
+        showsa = showsa.substring(0, showsa.toString().lastIndexOf(","));
+        return showsa;
+    }
+
+    public static String selectMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+
+        //显示字段
+        StringBuffer shows = new StringBuffer();
+        Iterator it = fields.iterator();
+        //这里会把实体的名称转换为驼峰的属性
+        while (it.hasNext()) {
+            String ss = it.next().toString();
+            String[] split = ss.split("-");
+            String sb = OneStringUtils.camelToUnderline(split[0].toString());
+            if (sb.contains("_")) {
+                sb = sb + " as " + split[0];
+            }
+            sb = sb + ", \n";
+            shows.append(sb);
+        }
+        //去掉最后一个 ，
+        String showsa = shows.toString();
+        showsa = showsa.substring(0, showsa.toString().lastIndexOf(","));
+
+        str.append("select   \n" + showsa + " \nfrom  " + tableName + " ");
+        return str.toString();
+    }
+
+    public static String insertMethod(String tableName, List<String> fields) {
+        //创建insert
+        StringBuffer str = new StringBuffer();
+        str.append("insert into " + tableName + "  \n");
+        Iterator it = fields.iterator();
+        str.append("( ");
+        //这里会把实体的名称转换为驼峰的属性
+        while (it.hasNext()) {
+            String ss = it.next().toString();
+            String[] split = ss.split("-");
+            str.append(OneStringUtils.camelToUnderline(split[0].toString()) + ",\n");
+        }
+        //去掉最后一个 " ,"
+        String values = str.toString();
+        values = values.substring(0, values.toString().lastIndexOf(","));
+        str = new StringBuffer("");
+        str.append(values);
+        str.append(" ) \n");
+        //插入值
+        Iterator itv = fields.iterator();
+        str.append("values (  \n");
+
+        while (itv.hasNext()) {
+            String ss = itv.next().toString();
+            String[] split = ss.split("-");
+            String sa = OneStringUtils.parseTypeToOracleType(split[1]);
+            str.append("#{" + split[0] + ",jdbcType=" + OneStringUtils.parseTypeToOracleType(split[1]) + "},\n");
+
+        }
+        //去掉最后一个 " ,
+        String vas = str.toString();
+        vas = vas.substring(0, vas.toString().lastIndexOf(","));
+        str = new StringBuffer("");
+        str.append(vas);
+        str.append(" ) \n");
+
+        return str.toString();
+    }
+
+    public static String selectListMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" select \n ");
+        str.append(" <include refid=\"record_column\"/> \n ");
+        str.append(" from " + tableName + "  \n ");
+        str.append(" where 1=1 \n ");
+        return str.toString();
+    }
+
+    public static String selectByIdMethod(String tableName, List<String> fields) {
+        StringBuffer str = new StringBuffer();
+        str.append(" select \n ");
+        str.append(" <include refid=\"record_column\"/> \n ");
+        str.append(" from " + tableName + " \n ");
+        str.append(" where id=#{id}  \n ");
+        return str.toString();
     }
 
 }
