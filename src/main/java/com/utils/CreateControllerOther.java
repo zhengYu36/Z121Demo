@@ -170,14 +170,14 @@ public class CreateControllerOther {
                 "" + name + ".class);\n\t");
         sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
         if(isok){
-            sb.append("             record.setCreateUserId(getUserId());\n\t");
-            sb.append("             record.setCreateDate(new Date());\n\t");
+            sb.append("             record.setEditUserId(getUserId());\n\t");
+            sb.append("             record.setEditDate(new Date());\n\t");
         }
         sb.append("             mapper.updateRecord(record);\n\t");
         sb.append("         } else {\n\t");
         if(isok){
-            sb.append("             record.setEditUserId(getUserId());\n\t");
-            sb.append("             record.setEditDate(new Date());\n\t");
+            sb.append("             record.setCreateUserId(getUserId());\n\t");
+            sb.append("             record.setCreateDate(new Date());\n\t");
         }
         sb.append("             mapper.saveRecord(record);\n\t");
         sb.append("         }\n\t");
