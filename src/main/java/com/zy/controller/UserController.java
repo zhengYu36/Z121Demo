@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -31,7 +32,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.io.*;
 import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -289,7 +290,7 @@ public class UserController {
             studentDao.delete(student.getId());
         } else if (student.getAge() == 5) {
 
-           List<Integer> lista = new ArrayList<Integer>() {
+            List<Integer> lista = new ArrayList<Integer>() {
                 {
                     add(100007);
                     add(100008);
@@ -307,9 +308,44 @@ public class UserController {
 
     @RequestMapping("update8")
     @ResponseBody
-    public String update8(UserInfo userInfo){
+    public String update8(UserInfo userInfo) {
         //Strx;
         userInfoDao.insert(userInfo);
+        return "ok";
+    }
+
+    @RequestMapping("update9")
+    @ResponseBody
+    public String update9(@RequestParam("files") MultipartFile[] files) throws IOException {
+        //1.获取文件 (这里没有判断文件后缀名，默认都为txt文件)
+        if (files.length > 0) {
+
+            for (int i = 0; i < files.length; i++) {
+                //获取文件，然后再写入
+                MultipartFile file = files[i];
+                String name = file.getName();
+
+                InputStream inputStream = file.getInputStream();
+
+                BufferedWriter writer = new BufferedWriter(
+                        new FileWriter(new File("E:/" + name + ".txt")));
+
+                //需要通过一个 InputStreamReader 中间类来转换
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+                String str = "";
+                while((str = reader.readLine())!=null){
+                    writer.write(str);
+                    writer.write("\n");
+                }
+                writer.flush();
+
+                //bufferedWriter.write(inputStream.);
+
+
+                //
+            }
+        }
+
         return "ok";
     }
 }  
