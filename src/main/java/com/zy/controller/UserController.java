@@ -339,6 +339,14 @@ public class UserController {
                 }
                 writer.flush();
 
+                //通过方法来转换
+                File fileNew = new File("E:/files2.txt");
+                if(!fileNew.exists()){
+                    fileNew.mkdirs();
+                }
+                //直接通过这种方法. 不用去获取然后又转换格式啥的，这个方法很牛叉的哈.
+                file.transferTo(fileNew);
+
                 //bufferedWriter.write(inputStream.);
 
 
