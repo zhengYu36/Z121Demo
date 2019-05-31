@@ -7,6 +7,7 @@ import com.utils.BasicJBZRestConfig;
 import com.utils.CaptchaUtil;
 import com.zy.dao.StudentDao;
 import com.zy.dao.UserInfoDao;
+import com.zy.dao.ZhengDao;
 import com.zy.domain.DemoA;
 import com.zy.domain.User;
 import com.zy.domain.UserInfo;
@@ -63,6 +64,9 @@ public class UserController {
 
     @Resource
     private UserInfoDao userInfoDao;
+
+    @Resource
+    private ZhengDao zhengDao;
 
     // 验证的简单生成
     @RequestMapping("/user/check.jpg")
@@ -340,7 +344,7 @@ public class UserController {
                 writer.flush();
 
                 //通过方法来转换
-                File fileNew = new File("E:/files2.txt");
+                File fileNew = new File("E:/files3.mp3");
                 if(!fileNew.exists()){
                     fileNew.mkdirs();
                 }
@@ -354,6 +358,16 @@ public class UserController {
             }
         }
 
+        return "ok";
+    }
+
+
+    //通过自定义的mapper来插入数据
+    @RequestMapping("update10")
+    @ResponseBody
+    public String update10(UserInfo userInfo) {
+        //Strx;
+        zhengDao.save(userInfo);
         return "ok";
     }
 }  

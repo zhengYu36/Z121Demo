@@ -18,7 +18,7 @@ import java.util.List;
 public class GeneratorUtils {
     private static String packName = "other";
 
-    //true 不排除  false 排除
+    //true表示是继承的baseEntry  ,false则不是
     private static boolean isok = true;
     public static void main(String[] args) throws Exception{
 

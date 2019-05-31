@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.dao.ZhengDao">
+    <sql id="record_info">
+        id,
+        name,
+        real_name as realName
+    </sql>
+
+    <insert id="save">
+        insert into user_info values(#{id},#{name},#{realName})
+    </insert>
+
+    <select id="queryList" resultType="com.zy.domain.UserInfo">
+        select
+        <include refid="record_info"/>
+        from user_info
+    </select>
+
+
+</mapper>
