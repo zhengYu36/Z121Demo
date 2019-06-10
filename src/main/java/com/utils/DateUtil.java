@@ -3,10 +3,7 @@ package com.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DateUtil {
 
@@ -770,9 +767,10 @@ public class DateUtil {
 
     /**
      * 时间戳转换为date格式
+     *
      * @return
      */
-    public static Date timeStamp(long time){
+    public static Date timeStamp(long time) {
         Date date = new Date();
         date.setTime(time);
         return date;
@@ -797,6 +795,104 @@ public class DateUtil {
             throw new Exception(e.getMessage());
         }
         return strDate;
+    }
+
+    /**
+     * 获取本周、本月、本季度等的开始或结束时间
+     * 注意是获取本周的数据， 用该事件去比较的时候
+     * 使用: >=  startDate and < endDate 注意 小于 endDate不能使用 =
+     *
+     * @param type 1=本周，2=本月，3=本季度
+     * @param date 如果为空，则查询当前时间
+     * @return
+     * startDate  开始时间 eg: 2019-06-04
+     * endDate    结束时间 eg: 2019-06-010
+     * eg:
+     *  如果日期是 2019-06-04 如果返回本周，那么
+     *      startDate = 2019-06-03
+     *       endDate = 2019-06-10 (但是在获取的时候不用等于该结束日期)
+     */
+    public static Map<String, String> getStartAndEndDateByType(String type, Date date) throws Exception {
+
+        //设置返回list
+        Map<String, String> resultMap = new HashMap<>();
+
+        Calendar cal = Calendar.getInstance();
+        if (date == null) {
+            date = new Date();
+        }
+
+        cal.setTime(date);
+
+        //本日
+        if("0".equals(type)){
+            //开始时间
+            resultMap.put("startDate", formatDate(cal.getTime()));
+
+            //结束时间
+            cal.add(Calendar.DATE, 1);// 把日期往后增加一天.整数往后推,负数往
+            resultMap.put("endDate", formatDate(cal.getTime()));
+        }
+
+        //本周
+        if ("1".equals(type)) {
+            //开始时间
+            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            resultMap.put("startDate", formatDate(cal.getTime()));
+
+            //结束时间
+            cal.setTime(cal.getTime());
+            cal.add(Calendar.DAY_OF_WEEK, 7);
+            resultMap.put("endDate", formatDate(cal.getTime()));
+        }
+
+        //本月
+        if ("2".equals(type)) {
+            //开始时间
+            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+            resultMap.put("startDate", formatDate(cal.getTime()));
+
+            //结束时间
+            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONDAY), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            cal.set(Calendar.HOUR_OF_DAY, 24);
+            resultMap.put("endDate", formatDate(cal.getTime()));
+        }
+
+        //本季
+        if ("3".equals(type)) {
+
+            //开始时间
+            int currentMonth = cal.get(Calendar.MONTH) + 1;
+            SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = null;
+            try {
+                if (currentMonth >= 1 && currentMonth <= 3)
+                    cal.set(Calendar.MONTH, 0);
+                else if (currentMonth >= 4 && currentMonth <= 6)
+                    cal.set(Calendar.MONTH, 3);
+                else if (currentMonth >= 7 && currentMonth <= 9)
+                    cal.set(Calendar.MONTH, 4);
+                else if (currentMonth >= 10 && currentMonth <= 12)
+                    cal.set(Calendar.MONTH, 9);
+                cal.set(Calendar.DATE, 1);
+                now = longSdf.parse(shortSdf.format(cal.getTime()) + " 00:00:00");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            resultMap.put("startDate", formatDate(cal.getTime()));
+
+            //结束时间
+            cal.setTime(cal.getTime());
+            cal.add(Calendar.MONTH, 3);
+            resultMap.put("endDate", formatDate(cal.getTime()));
+
+        }
+
+        return resultMap;
     }
 
 }
