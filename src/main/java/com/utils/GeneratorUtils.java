@@ -16,9 +16,9 @@ import java.util.List;
  * @author zhengyu
  */
 public class GeneratorUtils {
-    private static String packName = "other";
+    private static String packName = "com.yanjoy.scbim.mp.entity.videoSurveillance";
 
-    //true表示是继承的baseEntry  ,false则不是
+    //true表示是否继承了baseEntry  ,false则不是
     private static boolean isok = true;
     public static void main(String[] args) throws Exception{
 

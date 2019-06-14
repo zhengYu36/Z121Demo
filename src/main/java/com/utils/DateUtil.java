@@ -765,6 +765,20 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**]
+     * 1 表示往后退， -1表示往前推一天
+     * @param date
+     * @param day
+     * @return
+     */
+    public static Date getNextDayByDate(Date date,int day) {
+        Calendar calendar = Calendar.getInstance();
+        Date tdate = date;// 取时间
+        calendar.setTime(tdate);
+        calendar.add(calendar.DATE, day);// 把日期往后增加一天.整数往后推,负数往
+        return calendar.getTime();
+    }
+
     /**
      * 时间戳转换为date格式
      *
@@ -891,6 +905,9 @@ public class DateUtil {
             resultMap.put("endDate", formatDate(cal.getTime()));
 
         }
+
+        //todo 这里我把结束时间给减少了一天，理类上来看感觉是没问题的 ?
+        resultMap.put("endDate",formatDate(getNextDayByDate(parseDate(resultMap.get("endDate")),-1)));
 
         return resultMap;
     }
