@@ -812,19 +812,15 @@ public class DateUtil {
     }
 
     /**
-     * 获取本周、本月、本季度等的开始或结束时间
-     * 注意是获取本周的数据， 用该事件去比较的时候
-     * 使用: >=  startDate and < endDate 注意 小于 endDate不能使用 =
+     * 获取本周、本月、本季度等的开始或结束时
      *
-     * @param type 1=本周，2=本月，3=本季度
+     * @param type 1=本周，2=本月，3=本季度,4=本年
      * @param date 如果为空，则查询当前时间
      * @return
-     * startDate  开始时间 eg: 2019-06-04
-     * endDate    结束时间 eg: 2019-06-010
      * eg:
      *  如果日期是 2019-06-04 如果返回本周，那么
      *      startDate = 2019-06-03
-     *       endDate = 2019-06-10 (但是在获取的时候不用等于该结束日期)
+     *       endDate = 2019-06-9
      */
     public static Map<String, String> getStartAndEndDateByType(String type, Date date) throws Exception {
 
@@ -907,7 +903,23 @@ public class DateUtil {
         }
 
         //todo 这里我把结束时间给减少了一天，理类上来看感觉是没问题的 ?
-        resultMap.put("endDate",formatDate(getNextDayByDate(parseDate(resultMap.get("endDate")),-1)));
+        if("0".equals(type)||"1".equals(type)||"2".equals(type)||"3".equals(type))
+        {
+            resultMap.put("endDate",formatDate(getNextDayByDate(parseDate(resultMap.get("endDate")),-1)));
+        }
+
+
+        //本年
+        if("4".equals(type)){
+            //开始时间
+            resultMap.put("startDate", new SimpleDateFormat("yyyy").format(new Date())+"-01-01");
+
+            //结束时间
+            cal.set(Calendar.MONTH,cal.getActualMaximum(Calendar.MONTH));
+            cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            Date currYearLast = cal.getTime();
+            resultMap.put("endDate", new SimpleDateFormat("yyyy-MM-dd").format(currYearLast));
+        }
 
         return resultMap;
     }

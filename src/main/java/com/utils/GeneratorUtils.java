@@ -16,10 +16,10 @@ import java.util.List;
  * @author zhengyu
  */
 public class GeneratorUtils {
-    private static String packName = "com.yanjoy.scbim.mp.entity.videoSurveillance";
+    private static String packName = "com.yanjoy.scbim.mp.entity.intendance";
 
     //true表示是否继承了baseEntry  ,false则不是
-    private static boolean isok = true;
+    //private static boolean isok = true;
     public static void main(String[] args) throws Exception{
 
         //0.通过包来扫描获取所属类
@@ -30,6 +30,7 @@ public class GeneratorUtils {
             //获取实体名，需要有截取
             i = i.substring(i.lastIndexOf("\\")+1);
             //System.out.println(i);
+
 
             try {
                 /**
@@ -45,9 +46,10 @@ public class GeneratorUtils {
                 tableName = "YJ"+tableName;
                 tableName = tableName.toUpperCase();
 
+                System.out.println("sdfasdgasd");
                 //2.创建xml (xml需要额外创建) 和 sql输出
                 //默认不排除额外的属性,
-                GeneratorProduceMapperCRUD.createSql(packName+"."+i,null,tableName,isok);
+                GeneratorProduceMapperCRUD.createSql(packName+"."+i,null,tableName);
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -17,7 +17,7 @@ import java.util.*;
  * （这些一般是需要记录操作人，
  * 就是通过c#来直接获取的相关操作） 这样做是为了兼容一起的，可能稍有些繁杂，
  * 但是这样也是为了更好 good luck
- *
+ * <p>
  * 不会排除 父类的一些属性
  *
  * @author zhengyu
@@ -32,8 +32,8 @@ public class GeneratorProduceMapperCRUD {
     public static String[] REMOVE = {"createUserName", "editUserName", "serialVersionUID"};
 
     //生成oracle的sql语句的时候，需要排除的属性 （这些属性都是固定的），排除它是为了保证它的位置在最前面
-    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE","CREATE_USER_ID", "CREATE_DATE",
-            "EDIT_USER_ID","EDIT_DATE", "DELETE_FLAG", "MEMO"};
+    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE", "CREATE_USER_ID", "CREATE_DATE",
+            "EDIT_USER_ID", "EDIT_DATE", "DELETE_FLAG", "MEMO"};
 
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
@@ -43,48 +43,56 @@ public class GeneratorProduceMapperCRUD {
     //schema 指定数据库
     public static String CLASSNAME = "manager.ManagerProjectPlan";
 
-    public static boolean ISOK = true;
+    public static boolean ISOK = false;
 
 
     public static void main(String[] args) throws Exception {
         //创建sql和xml文件
         //提前出来为一个方法，方便批处理使用
-        createSql(CLASSNAME,SCHEMANAME,TABLENAME,true);
+        createSql(CLASSNAME, SCHEMANAME, TABLENAME);
     }
 
     /**
      * 生成时间： 2019/5/8 19:40
      * 方法说明：
      * 开发人员：zhengyu
-     *  @param className 类名称  包名.类名 eg:manager.ManagerProjectPlan
-     * @param schemaName 数据库名称
-     * @param tableName 表名称
-       * @param isok true表示是继承的baseEntry false则表示不是(就是不需要排除字段)
+     *
+     * @param className  类名称  包名.类名 eg:manager.ManagerProjectPlan
+     * @param schemaName 数据库名称
+     * @param tableName  表名称
      * @return void
      */
 
 
-    public static void createSql(String className,String schemaName,String tableName,boolean isok)
+    public static void createSql(String className, String schemaName, String tableName)
             throws Exception {
 
-        if(StringUtils.isNotEmpty(schemaName)){
+        if (StringUtils.isNotEmpty(schemaName)) {
             SCHEMANAME = schemaName;
         }
-        if(StringUtils.isNotEmpty(tableName)){
+        if (StringUtils.isNotEmpty(tableName)) {
             TABLENAME = tableName;
         }
-        //用全局变量，方便获取
-        ISOK = isok;
+
         Class cmc = Class.forName(className);
         //获取所有属性(包括父类的属性值)
         Field[] allFields = FieldUtils.getAllFields(cmc);
+
+        //// 判断是否是继承的,如果是,则需要排除默写字段 start
+        ISOK = judgeExtend(allFields);
 
         //用List保存数据，排除掉不需要的属性值
         List<String> set = new ArrayList<>();
         for (int i = 0; i < allFields.length; i++) {
             Field allField = allFields[i];
 
-            if(ISOK){
+            /**
+             * 这里排除的意思是说,在创建实体的时候在 createUserName
+             * 但是在数据库中又不存在,我也不知道他们以前为什么要这样来
+             * 设计,但是我最好和他们保持统一,但是这里写起还是有点坑,
+             * 有点傻叉
+             */
+            if (ISOK) {
                 boolean isflag = false;
                 for (int j = 0; j < REMOVE.length; j++) {
                     if (REMOVE[j].equals(allField.getName())) {
@@ -103,8 +111,21 @@ public class GeneratorProduceMapperCRUD {
         //System.out.println(str);
     }
 
+    private static boolean judgeExtend(Field[] allFields) {
+        for (int i = 0; i < allFields.length; i++) {
+            Field allField = allFields[i];
+            for (int j = 0; j < REMOVE.length; j++) {
+                if (REMOVE[j].equals(allField.getName())) {
+                    ISOK = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     //创建 xml文件
-    public static String createMapperXML(String tableName, List<String> fields) throws Exception{
+    public static String createMapperXML(String tableName, List<String> fields) throws Exception {
         StringBuffer str = new StringBuffer();
         //创建crud
         //insert
@@ -156,13 +177,13 @@ public class GeneratorProduceMapperCRUD {
 
         //创建sql语句 (需要使用自己的)
         String sql = "";
-        if(ISOK){
+        if (ISOK) {
             sql = produceSqlMethod(SCHEMANAME, tableName, fields);
-        }else{
+        } else {
             sql = produceSqlMethodByOrig(SCHEMANAME, tableName, fields);
         }
 
-        System.err.println("-- "+tableName+" sql为:");
+        System.err.println("-- " + tableName + " sql为:");
         System.err.println(sql);
         str.append("\n");
         str.append("\n--------------createsql  start------------------\n");
@@ -173,18 +194,18 @@ public class GeneratorProduceMapperCRUD {
         //创建xml尾部
         //str.append("</mapper>");
         //创建xml文件
-        CreateControllerOther.mapperXMLTemple(common,insert,update,selectList,selectById,delete);
+        CreateControllerOther.mapperXMLTemple(common, insert, update, selectList, selectById, delete);
         //创建xml文件
 
         return str.toString();
     }
 
-    public static String produceSqlMethod(String schema,String tableName,List<String> fields){
+    public static String produceSqlMethod(String schema, String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
         //这里为什么要单独提出来这里是为了在创建sql的时候，方便查询，因为目前该表这些
         //字段都是公共的，并且都是位置一致，为了方便，所以需要固定住
         //其他的字段的长度需要自己去手动定义数据，因为长度这些是需要自定义的，不能固定死
-        str.append(" CREATE TABLE \""+schema+"\".\""+tableName+"\"  ( \n");
+        str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
         str.append(" \"ID\" VARCHAR2(20) NOT NULL ENABLE,    \n");
         str.append(" \"NAME\" VARCHAR2(4000),    \n");
         str.append(" \"CODE\" VARCHAR2(200),   \n");
@@ -196,7 +217,7 @@ public class GeneratorProduceMapperCRUD {
         str.append(" \"MEMO\" VARCHAR2(4000),    \n");
 
         //循环迭代数据
-       for(int i=0;i<fields.size();i++){
+        for (int i = 0; i < fields.size(); i++) {
             String[] split = fields.get(i).split("-");
             boolean isflag = false;
             for (int j = 0; j < ORACLEREMOVE.length; j++) {
@@ -208,8 +229,8 @@ public class GeneratorProduceMapperCRUD {
             if (isflag) continue;
 
             String sb = OneStringUtils.camelToUnderline(split[0]);
-            str.append(" \""+sb.toUpperCase()+"\" " +
-                    " "+OneStringUtils.produceTypeToOracleType(split[1])+", \n");
+            str.append(" \"" + sb.toUpperCase() + "\" " +
+                    " " + OneStringUtils.produceTypeToOracleType(split[1]) + ", \n");
         }
 
         //去掉最后一个 ，
