@@ -92,11 +92,12 @@
 
 
     <!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <!-- 如果配置了这个那么 modelandview就会失效 -->
+    <!--<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="ignoreAcceptHeader" value="true" />
         <property name="defaultContentType" value="text/html" />
 
-        <!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+        &lt;!&ndash; 扩展名至mimeType的映射,即 /user.json => application/json &ndash;&gt;
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json" />
@@ -104,7 +105,7 @@
                 <entry key="xml" value="application/xml" />
             </map>
         </property>
-        <!-- 用于开启 /userinfo/123?format=json 的支持 -->
+        &lt;!&ndash; 用于开启 /userinfo/123?format=json 的支持 &ndash;&gt;
         <property name="favorParameter" value="false" />
         <property name="viewResolvers">
             <list>
@@ -120,7 +121,7 @@
         </property>
         <property name="defaultViews">
             <list>
-                <!-- for application/json -->
+                &lt;!&ndash; for application/json &ndash;&gt;
                 <bean
                         class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
                     <property name="objectMapper">
@@ -136,6 +137,12 @@
                 </bean>
             </list>
         </property>
+    </bean>-->
+
+
+    <bean id="bBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.B"/>
+    <bean id="aBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.A">
+       <!-- <property name="bClass" ref="bBean"/>-->
     </bean>
 
 

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -25,6 +27,10 @@ public class UserServiceImpl implements UserService {
 
     public int updateUserById(User user) {
         return userDao.updateUserById(user);
+    }
+
+    public List<User> queryList(User user) {
+        return userDao.queryList(user);
     }
 
 

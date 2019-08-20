@@ -19,10 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -125,7 +122,6 @@ public class UserController {
 
         System.out.println("测试方法的使用" + request.getMethod());
 
-
         response.setHeader("Access-Control-Allow-Origin", "*");
         System.out.println("bbbbbbbbbbbbbbb");
         User user = new User();
@@ -139,11 +135,46 @@ public class UserController {
     public ModelAndView getIndex() {
         System.out.println("ggggggggg");
         int i = 100;
-        ModelAndView mav = new ModelAndView("index");
-        User user = userService.selectUserById(1);
-        mav.addObject("user", user);
+        //为什么不能通过构造方法来呢?好神奇啊,妹的
+        //ModelAndView mav = new ModelAndView("hello");
+        ModelAndView mav = new ModelAndView("hello");
+        User user = userService.selectUserById(10001);
+
+        //mav.setViewName("hello");
+        //mav.addObject("user", user);
         return mav;
     }
+
+    @RequestMapping(value = "hello", method = RequestMethod.GET)
+    public ModelAndView hello() {
+
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security Hello World");
+        model.addObject("message", "This is welcome page!");
+        User user = userService.selectUserById(10001);
+        System.out.println(user);
+        
+        User param = new User();
+        param.setUserId(10002);
+        List<User> users = userService.queryList(param);
+
+        model.setViewName("hello");
+        return model;
+    }
+
+
+    //测试 spring security 关于登陆admin的验证
+    @RequestMapping(value = "/admin**", method = RequestMethod.GET)
+    public ModelAndView adminPage() {
+
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security Hello World");
+        model.addObject("message", "This is protected page!");
+        model.setViewName("admin");
+        return model;
+
+    }
+
 
     @RequestMapping("/abc3")
     public ModelAndView getabc3() {
@@ -152,7 +183,7 @@ public class UserController {
     }
 
     @RequestMapping("/index")
-    public void getabc(@RequestParam("id") int id, HttpServletRequest request) {
+    public ModelAndView index(@RequestParam("id") int id, HttpServletRequest request) {
 
         Enumeration<String> parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
@@ -161,11 +192,12 @@ public class UserController {
         }
 
         System.out.println("index start...");
-        //applicationContext.publishEvent(new DemoA(this));
+        //applicationContext.publishEvent(new B(this));
         int i = 10000;
         ModelAndView mav = new ModelAndView("index");
         User user = userService.selectUserById(id);
         mav.addObject("user", user);
+        return mav;
     }
 
     /**
@@ -335,9 +367,9 @@ public class UserController {
                         new FileWriter(new File("E:/" + name + ".txt")));
 
                 //需要通过一个 InputStreamReader 中间类来转换
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
                 String str = "";
-                while((str = reader.readLine())!=null){
+                while ((str = reader.readLine()) != null) {
                     writer.write(str);
                     writer.write("\n");
                 }
@@ -345,7 +377,7 @@ public class UserController {
 
                 //通过方法来转换
                 File fileNew = new File("E:/files3.mp3");
-                if(!fileNew.exists()){
+                if (!fileNew.exists()) {
                     fileNew.mkdirs();
                 }
                 //直接通过这种方法. 不用去获取然后又转换格式啥的，这个方法很牛叉的哈.

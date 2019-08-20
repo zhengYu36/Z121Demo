@@ -61,6 +61,11 @@ public class Demo9 {
             public void run() {
                 try {
                     System.out.println("我是第3个任务");
+
+                    for (int i=0;i<10;i++){
+                        System.out.println("gsadfasdgasd");
+                    }
+
                     begin.await();
                 } catch (InterruptedException e) {
                 } finally {

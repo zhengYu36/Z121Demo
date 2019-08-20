@@ -10,25 +10,11 @@ package com.zy.callback;
  *
  * @author zhengyu
  */
-interface Dx {
-    public void say();
-}
-class Ax{
-    public Ax(Dx dx){
-        dx.say();
-    }
-}
 
 public class DemoB {
 
     public static void main(String[] args) {
-        System.out.println("start demo!");
-        new Ax(new Dx() {
-            @Override
-            public void say() {
-                System.out.println("ggg");
-            }
-        });
+        System.out.println("this is my sin !");
 
     }
 

@@ -1,0 +1,34 @@
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.springframework.org/schema/security"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+
+    <http pattern="/hello" security="none"/>
+
+    <http auto-config="true">
+        <intercept-url pattern="/**" access="ROLE_USER"/>
+    </http>
+
+    <authentication-manager>
+       <!-- <authentication-provider>
+        <user-service>
+            <user name="yiibai" password="123456" authorities="ROLE_USER"/>
+        </user-service>
+        </authentication-provider>-->
+        <!-- 通过数据库去访问 -->
+        <authentication-provider user-service-ref="userDetailsManager">
+            <password-encoder hash="md5">
+                <!--<salt-source user-property="prefix"/>-->
+            </password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+
+    <!-- 用户详细信息管理：数据源、用户缓存（通过数据库管理用户、角色、权限、资源）。 -->
+    <beans:bean id="userDetailsManager" class="com.zy.service.MyUserDetailsService"/>
+
+</beans:beans>
+

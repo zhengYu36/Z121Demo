@@ -13,6 +13,14 @@
 		SELECT * FROM User WHERE USER_ID = #{userId}
 	</select>
 
+    <!-- 根据实体来查询 -->
+    <select id="queryList" resultMap="BaseResultMap" parameterType="com.zy.domain.User">
+        select * from User where 1=1
+        <if test="user.userId !=null">and USER_ID = #{user.userId} </if>
+        <if test="user.userName !=null">and user_name like '%' || #{user.userName} || '%'</if>
+        <if test="user.userPassword !=null"> and USER_PASSWORD = #{user.userPassword} </if>
+    </select>
+
     <!-- 通过实体的方式来插入数据 -->
     <insert id="insertUser" parameterType="com.zy.domain.User">
         insert into User(USER_ID,USER_NAME,USER_PASSWORD)  

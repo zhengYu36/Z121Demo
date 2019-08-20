@@ -1,7 +1,8 @@
 package com.zy.service;
 
 import com.zy.domain.User;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 public interface UserService {
 	
@@ -14,4 +15,7 @@ public interface UserService {
 	int updateProperty(String name,String pwd);   //修改多参数
 	
 	void ope();   //测试事物
+
+	List<User> queryList(User user);
+
 }

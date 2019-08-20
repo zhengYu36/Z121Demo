@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JS判断是否开启大小写</title>
+</head>
+<body>
+<input type="text" id="input">
+<h1 style="display:none;">大写已经开启了！</h1>
+</body>
+</html>
+<script>
+
+    var input = document.querySelector("#input");
+    var h1 = document.querySelector("h1");
+
+    function toggle(elem){
+        if(elem.style.display == "block"){
+            elem.style.display = "none";
+        }else{
+            elem.style.display = "block";
+        }
+    }
+
+    input.onkeydown = function(e){
+
+        console.log("this is logger info");
+        testCapsLock(e);
+
+       /* var e = e || window.event;
+        var capsLockKey = e.keyCode ? e.keyCode : e.which;
+        if(e.keyCode == 20){
+            toggle(h1);
+        }else{
+            h1.style.display = "none";
+        }*/
+    }
+
+    //判断capslk是否打开
+    function  testCapsLock(e){
+        var valueCapsLock = e.keyCode ? e.keyCode:e.which; // 按键
+        var valueShift = e.shiftKey ? e.shiftKey:((valueCapsLock == 16 ) ? true : false ); // shift键是否按住
+        if (((valueCapsLock >= 65 && valueCapsLock <= 90 ) && !valueShift) // 输入了大写字母，并且shift键没有按住，说明Caps Lock打开
+            || ((valueCapsLock >= 97 && valueCapsLock <= 122 ) && valueShift)){// 输入了小写字母，并且按住 shift键，说明Caps Lock打开
+            console.log("trun on");
+            return true;
+        } else {
+            console.log("trun off");
+            return false;
+        }
+    }
+
+
+</script>
