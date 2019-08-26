@@ -1,4 +1,4 @@
-package com.utils.db;
+package com.utils;
 
 import java.io.*;
 
@@ -8,16 +8,17 @@ import java.io.*;
  * <li>创建时间 : 2019/8/19 16:16</li>
  * <li>修改记录 : 无</li>
  * </ul>
- * 类说明:  mysql 数据库的备份工具  目前测试版本是可以用
+ * 类说明:  mysql 数据库的备份工具类
+ *  命令行备份
  *
  * @author zhengyu
  */
-public class MysqlUtils {
+public class MysqlCmdBackUtils {
 
     public static void main(String[] args) {
 
-        String hostIp = "192.168.1.10";
-        //String hostIp = "127.0.0.1";
+        //String hostIp = "192.168.1.10";
+        String hostIp = "127.0.0.1";
         String userName = "root";
         String password = "root";
         String databaseName = "xby_design_review";
@@ -26,10 +27,12 @@ public class MysqlUtils {
        /* backup(hostIp, userName, password,
                 "E:", "mydb6", databaseName);*/
 
-       //测试导入到本地数据库
-        String path = "E:\\mydb6.sql";
+        //测试导入到本地数据库
+       // String path = "E:\\back9.sql";
+        String path = "E:\\mysqlBack.sql";
         //restore("E:\\mysqlback\\back.sql", hostIp, "zy", userName, password);
-        restore(path, hostIp, "szyj", userName, "root");
+        //restore(path, hostIp, "szyj2", userName, "123456");
+        restore2(path, hostIp, "szyj2", userName, "123456");
 
     }
 
@@ -76,6 +79,15 @@ public class MysqlUtils {
         return false;
     }
 
+
+    /**
+     * @param filepath 要恢复的文件地址
+     * @param ip       ip地址
+     * @param database 要恢复到的数据库名称
+     * @param userName 数据库的用户名
+     * @param password 数据库的密码
+     * @return
+     */
     public static void restore(String filepath, String ip, String database, String userName, String password) {
         try {
             Runtime runtime = Runtime.getRuntime();
@@ -99,13 +111,49 @@ public class MysqlUtils {
             outputStream.close();
             br.close();
             writer.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            System.out.println("restore success...");
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static boolean restore2(String filepath, String ip, String database, String userName, String password) {
+
+        boolean isok = false;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            Process process = runtime
+                    .exec("mysql -h" + ip + " -u" + userName + " -p" + password + " --default-character-set=utf8 "
+                            + database);
+
+            //读取输入流
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(filepath), "utf-8"));
+
+            //打开文件读写流
+            OutputStream outputStream = process.getOutputStream();
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream,
+                    "utf-8");
+            //用缓存流进行数据的传输
+            //这样不会出现内存溢出的问题
+            BufferedWriter bw = new BufferedWriter(writer,1020 * 1024 * 200);
+            String str = null;
+            while ((str = br.readLine()) != null) {
+                bw.write(str);
+            }
+
+            bw.flush();
+            bw.close();
+            writer.close();
+            outputStream.close();
+            br.close();
+            isok = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isok;
     }
 
 }

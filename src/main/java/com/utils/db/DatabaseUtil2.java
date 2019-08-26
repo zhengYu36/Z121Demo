@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author zhengyu
  */
 
-public class DatabaseUtil {
+public class DatabaseUtil2 {
 /*    private final static Logger LOGGER = LoggerFactory.getLogger(DatabaseUtil.class);
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
@@ -32,12 +32,12 @@ public class DatabaseUtil {
     private static String INSERT = "INSERT INTO";//插入sql
     private static String VALUES = "VALUES";//values关键字*/
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DatabaseUtil.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DatabaseUtil2.class);
     private static final String SQL = "SELECT * FROM ";// 数据库操作
     private static String DRIVER = "com.mysql.jdbc.Driver";
-    private static String URL = "jdbc:mysql://localhost:3306/zy?useUnicode=true&characterEncoding=utf8";
+    private static String URL = "jdbc:mysql://192.168.1.10:3306/digitalhandover?useUnicode=true&characterEncoding=utf8";
     private static String USERNAME = "root";
-    private static String PASSWORD = "123456";
+    private static String PASSWORD = "root";
     private static String INSERT = "INSERT INTO";//插入sql
     private static String VALUES = "VALUES";//values关键字
 
@@ -421,24 +421,20 @@ public class DatabaseUtil {
         //System.out.println("tableNames:" + tableNames);
 
         //排除指定的表
-        //List<String> exceptTable = getExceptTable(tableNames, "data*");
-        for (String tableName : tableNames) {
+        List<String> exceptTable = getExceptTable(tableNames, "act_*");
+        for (String tableName : exceptTable) {
+            System.out.println("tableName is:" + tableName);
+            List<String> columnNames = getColumnNames(tableName);
 
-            if (tableName.equals("databasechangelog")) {
-                //获取创建表的sql
-                StringBuilder sql = new StringBuilder();
-                sql.append("DROP TABLE IF EXISTS `" + tableName + "`;\n");
-                sql.append(getCreateTableSql(tableName) + ";\n");
-                sql.append("LOCK TABLES `" + tableName + "` WRITE;" + "\n");
-                sql.append(getInsertTableData(tableName) + "\n");
-                sql.append("UNLOCK TABLES;");
-
-                //生成sql.并写入到文件中
-                System.out.println(sql.toString() + "\n\n");
-               // FileUtils.writeFile(null,"sql5.sql",sql.toString());
+            for (int i = 0; i < columnNames.size(); i++) {
+                if (columnNames.get(i).toUpperCase().equals("PROJECT_ID")) {
+                    System.out.println("该表存在PROJECT_ID字段 "+columnNames);
+                }
             }
-
-
+            System.out.println();
         }
+
+        System.out.println("\n");
+
     }
 }

@@ -1,7 +1,7 @@
 package com.zy.controller;
 
 import com.utils.BasicJBZRestConfig;
-import com.utils.FileReader;
+import com.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -23,7 +23,7 @@ public class restTemplateController {
         //CapturePush();
         AlarmPush capturePush = new AlarmPush();
         capturePush.setBim_station_id("6383686960287981568");
-        String imageBase64 = FileReader.ReadFile(null);
+        String imageBase64 = FileUtils.ReadFile(null);
         capturePush.setFace_base64(imageBase64);
         capturePush.setScene_base64(imageBase64);
         capturePush.setTime(1552878941);
@@ -48,7 +48,7 @@ public class restTemplateController {
     private static void CapturePush() {
         CapturePush capturePush = new CapturePush();
         capturePush.setBim_station_id("6383686960287981568");
-        String imageBase64 = FileReader.ReadFile(null);
+        String imageBase64 = FileUtils.ReadFile(null);
         capturePush.setFace_base64(imageBase64);
         capturePush.setScene_base64(imageBase64);
         capturePush.setTime(1552878941);
