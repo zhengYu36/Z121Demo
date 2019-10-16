@@ -19,6 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.*;
 import java.rmi.ServerException;
 import java.util.ArrayList;
@@ -153,7 +155,7 @@ public class UserController {
         model.addObject("message", "This is welcome page!");
         User user = userService.selectUserById(10001);
         System.out.println(user);
-        
+
         User param = new User();
         param.setUserId(10002);
         List<User> users = userService.queryList(param);
@@ -402,4 +404,18 @@ public class UserController {
         zhengDao.save(userInfo);
         return "ok";
     }
+
+    //验证参数,通过注解的方式
+    @RequestMapping("/aa/validParam")
+    @ResponseBody
+    public String validParam(@Valid UserInfo userInfo, BindingResult bErrors) {
+
+        System.out.println("valid param");
+        if (bErrors.hasErrors()) {
+            return "fail";
+        }
+        return "ok";
+    }
+
+
 }  

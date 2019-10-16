@@ -29,11 +29,13 @@ public class GeneratorProduceMapperCRUD {
      * 排除的原因是因为在scbim的n项目中，有一个公共父类，里面有类似于创建用户名称，但是在创建sql
      * 的时候又没有，so，为了和以前的一样所有这样自定义了一个
      */
-    public static String[] REMOVE = {"createUserName", "editUserName", "serialVersionUID"};
+    //public static String[] REMOVE = {"createUserName", "editUserName", "serialVersionUID"};
+    public static String[] REMOVE = { "serialVersionUID"};
 
-    //生成oracle的sql语句的时候，需要排除的属性 （这些属性都是固定的），排除它是为了保证它的位置在最前面
-    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE", "CREATE_USER_ID", "CREATE_DATE",
-            "EDIT_USER_ID", "EDIT_DATE", "DELETE_FLAG", "MEMO"};
+    //生成oracle的sql语句的时候，需要固定在前面的属性 （这些属性都是固定的），排除它是为了保证它的位置在最前面,
+    //提高可读性
+    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE", "CREATE_USER_ID", "CREATE_DATE","CREATE_USER_NAME",
+            "EDIT_USER_ID","EDIT_USER_NAME", "EDIT_DATE", "DELETE_FLAG", "MEMO"};
 
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
@@ -75,11 +77,15 @@ public class GeneratorProduceMapperCRUD {
         }
 
         Class cmc = Class.forName(className);
-        //获取所有属性(包括父类的属性值)
-        Field[] allFields = FieldUtils.getAllFields(cmc);
 
+        //获取所有属性(包括父类的属性值)
+        String superName = cmc.getSuperclass().getSimpleName();
+        if(superName.equals("BaseEntity")){
+            ISOK = true;
+        }
+        Field[] allFields = FieldUtils.getAllFields(cmc);
         //// 判断是否是继承的,如果是,则需要排除默写字段 start
-        ISOK = judgeExtend(allFields);
+        //ISOK = judgeExtend(allFields);
 
         //用List保存数据，排除掉不需要的属性值
         List<String> set = new ArrayList<>();
@@ -111,18 +117,6 @@ public class GeneratorProduceMapperCRUD {
         //System.out.println(str);
     }
 
-    private static boolean judgeExtend(Field[] allFields) {
-        for (int i = 0; i < allFields.length; i++) {
-            Field allField = allFields[i];
-            for (int j = 0; j < REMOVE.length; j++) {
-                if (REMOVE[j].equals(allField.getName())) {
-                    ISOK = true;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     //创建 xml文件
     public static String createMapperXML(String tableName, List<String> fields) throws Exception {

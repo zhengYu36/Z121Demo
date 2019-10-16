@@ -101,6 +101,20 @@ public class CreateControllerOther {
         sb.append(" 	}\n\t");
         sb.append(" 	\n\t");
 
+        //查询全部分页
+        sb.append(" 	@RequestMapping(value=\"/queryListPage\")\n\t");
+        sb.append(" 	public ModelAndView queryListPage(" + name + " record) throws Exception{\n\t");
+        sb.append("         ModelAndView result = new ModelAndView();\n\t");
+        sb.append("         State state = new State(\"0\");\n\t");
+        sb.append("         List<" + name + "> recordList = service.queryListPage(pageInfo,record);\n\t");
+        sb.append("         result.addObject(\"data\", recordList);\n\t");
+        sb.append("         result.addObject(\"pageInfo\", pageInfo);\n\t");
+        sb.append("         result.addObject(\"state\", state);\n\t");
+        sb.append(" 		return result;\n\t");
+        sb.append(" 	}\n\t");
+        sb.append(" 	\n\t");
+
+
 
         //根据id查询数据(一条数据)
         sb.append(" 	@RequestMapping(value=\"/selectRecordById\")\n\t");
@@ -171,12 +185,14 @@ public class CreateControllerOther {
         sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
         if(isok){
             sb.append("             record.setEditUserId(getUserId());\n\t");
+            sb.append("             record.setEditUserName(getUserName());\n\t");
             sb.append("             record.setEditDate(new Date());\n\t");
         }
         sb.append("             mapper.updateRecord(record);\n\t");
         sb.append("         } else {\n\t");
         if(isok){
             sb.append("             record.setCreateUserId(getUserId());\n\t");
+            sb.append("             record.setCreateUserName(getUserName());\n\t");
             sb.append("             record.setCreateDate(new Date());\n\t");
         }
         sb.append("             mapper.saveRecord(record);\n\t");
@@ -188,6 +204,12 @@ public class CreateControllerOther {
         //查询全部
         sb.append(" 	public List<" + name + "> queryList(" + name + " record) {\n\t");
         sb.append(" 		return mapper.queryList(record);\n\t");
+        sb.append(" 	}\n\t");
+        sb.append(" 	\n\t");
+
+        //查询全部分页
+        sb.append(" 	public List<" + name + "> queryListPage(PageInfo pageInfo," + name + " record) {\n\t");
+        sb.append(" 		return mapper.queryListPage(pageInfo,record);\n\t");
         sb.append(" 	}\n\t");
         sb.append(" 	\n\t");
 
@@ -226,6 +248,7 @@ public class CreateControllerOther {
         String str3 = name + "Mapper";
         sb = new StringBuilder();
         sb.append("import java.util.List;\n");
+        sb.append("import org.apache.ibatis.annotations.Param;\n");
         sb.append("\n\n");
         sb.append("public interface " + name + "Mapper {\n\t");
         sb.append(" 	\n\t");
@@ -239,6 +262,10 @@ public class CreateControllerOther {
 
         //查询全部
         sb.append(" 	List<" + name + "> queryList(" + name + " record);\n\t");
+        sb.append(" \n\t");
+
+        //查询全部分页
+        sb.append(" 	List<" + name + "> queryListPage(@Param(\"page\") PageInfo pageInfo,@Param(\"record\")" + name + " record);\n\t");
         sb.append(" \n\t");
 
         //根据查询某个数据
@@ -310,6 +337,12 @@ public class CreateControllerOther {
 
         //查询全部
         sb.append(" 	<select id=\"queryList\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
+        sb.append(" 	    "+selectList+"\n\t");
+        sb.append(" 	</select>\n\t");
+        sb.append(" \n\t");
+
+        //查询全部分页
+        sb.append(" 	<select id=\"queryListPage\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
         sb.append(" 	    "+selectList+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");

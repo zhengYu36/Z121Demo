@@ -9,6 +9,7 @@ import java.io.*;
  * <li>修改记录 : 无</li>
  * </ul>
  * 类说明：通过写入流的方式来保存数据,这样不用通过StringBuilder来中转一次
+ * 这样是用200m来保存,存满了就写入文件
  *
  * @author zhengyu
  */
@@ -33,7 +34,7 @@ public class FileStreamUtils {
         this.fos = new FileOutputStream(file,true);
         this.osw = new OutputStreamWriter(this.fos, "UTF-8");
         //初始化大小200M
-        this.bw = new BufferedWriter(osw, 1020 * 1024 * 200);
+        this.bw = new BufferedWriter(osw, 1024 * 1024 * 200);
     }
 
     public void appeand(String str) throws IOException {
@@ -42,7 +43,7 @@ public class FileStreamUtils {
 
     public void close() throws IOException {
 
-        //在关闭的时候自动更新流
+        //在关闭的时候自动更新流,请注意关闭的顺序,从最里面开始关闭,后面是外面
         bw.flush();
         bw.close();
         osw.close();

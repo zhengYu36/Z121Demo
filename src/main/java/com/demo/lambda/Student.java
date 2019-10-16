@@ -17,6 +17,25 @@ public class Student{
         this.score = score;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if(this == obj) return true;
+        if(obj instanceof Student){
+            Student user =(Student)obj;
+            if(user.name.equals(this.name)) return true;
+//			if(user.id = this.id) return true; // 只比较id
+            // 比较id和username 一致时才返回true 之后再去比较 hashCode
+           // if(user.id == this.id && user.username.equals(this.username)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     public Student() {
     }
 

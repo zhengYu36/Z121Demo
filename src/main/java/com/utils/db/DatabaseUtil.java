@@ -1,5 +1,7 @@
 package com.utils.db;
 
+import com.utils.FileStreamUtils;
+import com.utils.MysqlStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
  * </ul>
  * 类说明：获取数据库下的所有表
  * 参考url:
+ * 该工具类的问题: 每次去查询表或是视图都要打开一次连接,这样比较消耗资源,所以2中
+ * 我全部来进行修改
+ * 实现证明 DatabaseUtil2中只打开一次的方式速度会更快.
  *
  * @author zhengyu
  */
@@ -35,11 +40,12 @@ public class DatabaseUtil {
     private final static Logger LOGGER = LoggerFactory.getLogger(DatabaseUtil.class);
     private static final String SQL = "SELECT * FROM ";// 数据库操作
     private static String DRIVER = "com.mysql.jdbc.Driver";
-    private static String URL = "jdbc:mysql://localhost:3306/zy?useUnicode=true&characterEncoding=utf8";
+    private static String URL = "jdbc:mysql://192.168.1.10:3306/digitalhandover?useUnicode=true&characterEncoding=utf8";
     private static String USERNAME = "root";
-    private static String PASSWORD = "123456";
+    private static String PASSWORD = "root";
     private static String INSERT = "INSERT INTO";//插入sql
     private static String VALUES = "VALUES";//values关键字
+
 
     static {
         try {
@@ -63,6 +69,72 @@ public class DatabaseUtil {
         }
         return conn;
     }
+
+    /**
+     * 初始化字段
+     *
+     * @param url
+     * @param userName
+     * @param password
+     */
+    public static void initDriverInfo(String url, String userName, String password) {
+        URL = url;
+        USERNAME = userName;
+        PASSWORD = password;
+    }
+
+    /**
+     * @param path            文件路径
+     * @param fileName        文件名称
+     * @param exceptionTables 指定排除的表
+     *                        eg: 如果是data* 表示排除以data开头的表
+     * @param filterColumn    过滤的字段
+     * @param condition       过滤字段的条件
+     */
+    public static void produceSqlFile(String path, String fileName, String[] exceptionTables, String filterColumn,
+                                      String condition) throws Exception {
+
+        if (path == null || fileName == null) {
+            throw new IllegalArgumentException("path or fileName can't null");
+        }
+
+        //查询数据表
+        List<String> tableNames = getTableNames();
+
+        if (exceptionTables.length > 0) {
+            //排除指定表
+            for (int i = 0; i < exceptionTables.length; i++) {
+                tableNames = getExceptTable(tableNames, exceptionTables[i]);
+            }
+        }
+
+        //通过缓存流的方式来写入文件
+        FileStreamUtils fileStreamUtils = new FileStreamUtils(path, fileName);
+        fileStreamUtils.appeand("SET NAMES utf8mb4;\n");
+        fileStreamUtils.appeand("SET FOREIGN_KEY_CHECKS = 0;\n");
+        for (String tableName : tableNames) {
+
+            //创建表sql
+            StringBuilder preSql = new StringBuilder();
+            preSql.append("DROP TABLE IF EXISTS `" + tableName + "`;\n");
+            preSql.append(getCreateTableSql(tableName) + ";\n");
+            preSql.append("LOCK TABLES `" + tableName + "` WRITE;" + "\n");
+            fileStreamUtils.appeand(preSql.toString());
+
+            //写入insert语句
+            getInsertTableData(fileStreamUtils, path, fileName, tableName, filterColumn, condition);
+
+            StringBuilder tailSql = new StringBuilder();
+            tailSql.append("UNLOCK TABLES;" + "\n\n");
+            fileStreamUtils.appeand(tailSql.toString());
+        }
+
+        fileStreamUtils.appeand("SET FOREIGN_KEY_CHECKS = 1;\n");
+
+        //关闭流
+        fileStreamUtils.close();
+    }
+
 
     /**
      * 关闭数据库连接
@@ -217,7 +289,8 @@ public class DatabaseUtil {
         Connection conn = getConnection();
         PreparedStatement pStemt = null;
         String tableSql = SQL + tableName;
-        List<String> columnComments = new ArrayList<>();//列名注释集合
+        //列名注释集合
+        List<String> columnComments = new ArrayList<>();
         ResultSet rs = null;
         try {
             pStemt = conn.prepareStatement(tableSql);
@@ -258,19 +331,17 @@ public class DatabaseUtil {
             pStemt = conn.prepareStatement(tableSql);
             ResultSet resultSet = pStemt.executeQuery();
             while (resultSet.next()) {
-                //创建创建表的语句
-                //System.out.println(resultSet.getString(2));
                 return resultSet.getString("Create Table");
             }
         } catch (SQLException e) {
-            LOGGER.error("getColumnNames failure", e);
+            LOGGER.error("getCreateTableSql failure", e);
         } finally {
             if (pStemt != null) {
                 try {
                     pStemt.close();
                     closeConnection(conn);
                 } catch (SQLException e) {
-                    LOGGER.error("getColumnNames close pstem and connection failure", e);
+                    LOGGER.error("getCreateTableSql close pstem and connection failure", e);
                 }
             }
         }
@@ -281,15 +352,33 @@ public class DatabaseUtil {
      * 生成时间： 2019/8/21 9:36
      * 方法说明：根据表名获取该表insert的字符串
      * 开发人员：zhengyu
+     * 由于会有这么一个问题,就是该表如果数据量很大那么就会导致String的内存一出,
+     * 所有责任insert一句就写一句sql
      *
-     * @param tableName 表名称
+     * @param tableName    表名称
+     * @param filterColumn 过滤的字段
+     * @param condition    过滤字段的条件
      * @return insert表的字符串
      */
-    public static String getInsertTableData(String tableName) {
+    public static void getInsertTableData(FileStreamUtils fileStreamUtils, String path, String fileName,
+                                          String tableName,
+                                          String filterColumn,
+                                          String condition) throws Exception {
         //与数据库的连接
         Connection conn = getConnection();
         PreparedStatement pStemt = null;
         String tableSql = SQL + tableName;
+
+        //获取所有字段
+        List<String> columnNames = getColumnNames(tableName);
+        //判断是否有该字段
+        columnNames = columnNames.stream().filter(x -> x.equals(filterColumn)).collect(Collectors.toList());
+        if (columnNames.size() > 0) {
+            //如果存在,则可以拼接该条件,否则则不拼接该条件
+            String whereSql = " where " + filterColumn + " = '" + condition + "'";
+            tableSql = tableSql + whereSql;
+        }
+
         try {
             //获取executeQuery()
             pStemt = conn.prepareStatement(tableSql);
@@ -298,33 +387,40 @@ public class DatabaseUtil {
             //获取元数据
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
-            StringBuilder insertSql = new StringBuilder();
 
             while (rs.next()) {
                 StringBuffer ColumnName = new StringBuffer();
                 StringBuffer ColumnValue = new StringBuffer();
                 //拼接columnName 和 columnValue
                 getColumnNameAndValue(rs, rsmd, columnCount, ColumnName, ColumnValue);
-                insertSql.append(insertSQL(ColumnName, ColumnValue, tableName) + "\n");
+                fileStreamUtils.appeand(insertSQL(ColumnName, ColumnValue, tableName) + "\n");
             }
 
-            return insertSql.toString();
         } catch (SQLException e) {
-            LOGGER.error("getColumnNames failure", e);
+            LOGGER.error("getInsertTableData failure", e);
         } finally {
             if (pStemt != null) {
                 try {
                     pStemt.close();
                     closeConnection(conn);
                 } catch (SQLException e) {
-                    LOGGER.error("getColumnNames close pstem and connection failure", e);
+                    LOGGER.error("getInsertTableData close pstem and connection failure", e);
                 }
             }
         }
-        return "";
+
     }
 
-    //得到类型和类型对应的值
+    /**
+     * 得到类型和类型对应的值
+     *
+     * @param rs
+     * @param rsmd
+     * @param columnCount
+     * @param columnName
+     * @param columnValue
+     * @throws SQLException
+     */
     private static void getColumnNameAndValue(ResultSet rs, ResultSetMetaData rsmd, int columnCount, StringBuffer columnName, StringBuffer columnValue) throws SQLException {
         for (int i = 1; i <= columnCount; i++) {
             String value = rs.getString(i);
@@ -339,13 +435,12 @@ public class DatabaseUtil {
                 columnName.append(rsmd.getColumnName(i));
                 if (i == 1) {
                     if (Types.CHAR == rsmd.getColumnType(i) || Types.VARCHAR == rsmd.getColumnType(i) || Types.LONGVARCHAR == rsmd.getColumnType(i)) {
-
                         if (value == null) {
                             columnValue.append(value).append(",");
                         } else {
+                            value = MysqlStringUtil.escapeSpecialChar(value);
                             columnValue.append("'").append(value).append("',");
                         }
-
                     } else if (Types.SMALLINT == rsmd.getColumnType(i) || Types.INTEGER == rsmd.getColumnType(i) || Types.BIGINT == rsmd.getColumnType(i) || Types.FLOAT == rsmd.getColumnType(i) || Types.DOUBLE == rsmd.getColumnType(i) || Types.NUMERIC == rsmd.getColumnType(i) || Types.DECIMAL == rsmd.getColumnType(i) || Types.TINYINT == rsmd.getColumnType(i)) {
                         columnValue.append(value).append(",");
                     } else if (Types.DATE == rsmd.getColumnType(i) || Types.TIME == rsmd.getColumnType(i) || Types.TIMESTAMP == rsmd.getColumnType(i)) {
@@ -354,7 +449,6 @@ public class DatabaseUtil {
                         } else {
                             columnValue.append("'").append(value).append("',");
                         }
-
                     } else {
                         columnValue.append(value).append(",");
 
@@ -365,6 +459,7 @@ public class DatabaseUtil {
                         if (value == null) {
                             columnValue.append(value);
                         } else {
+                            value = MysqlStringUtil.escapeSpecialChar(value);
                             columnValue.append("'").append(value).append("'");
                         }
 
@@ -372,9 +467,9 @@ public class DatabaseUtil {
                         columnValue.append(value);
                     } else if (Types.DATE == rsmd.getColumnType(i) || Types.TIME == rsmd.getColumnType(i) || Types.TIMESTAMP == rsmd.getColumnType(i)) {
                         if (value == null) {
-                            columnValue.append(value).append(",");
+                            columnValue.append(value);
                         } else {
-                            columnValue.append("'").append(value).append("',");
+                            columnValue.append("'").append(value).append("'");
                         }
                     } else {
                         columnValue.append(value);
@@ -387,6 +482,7 @@ public class DatabaseUtil {
                     if (value == null) {
                         columnValue.append(value).append(",");
                     } else {
+                        value = MysqlStringUtil.escapeSpecialChar(value);
                         columnValue.append("'").append(value).append("',");
                     }
 
@@ -405,40 +501,33 @@ public class DatabaseUtil {
         }
     }
 
-    //拼接sql
+    /**
+     * 拼接sql
+     *
+     * @param ColumnName
+     * @param ColumnValue
+     * @param tableName
+     * @return
+     */
     private static String insertSQL(StringBuffer ColumnName, StringBuffer ColumnValue, String tableName) {
         StringBuffer insertSQL = new StringBuffer();
         insertSQL.append(INSERT).append(" ")
                 .append(tableName).append("(").append(ColumnName.toString()).append(")").append(VALUES).append("(").append(ColumnValue.toString()).append(");");
-        //insertList.add(insertSQL.toString());
-        //System.out.println(insertSQL.toString());
         return insertSQL.toString();
     }
 
-    public static void main(String[] args) {
-        //查询数据表
-        List<String> tableNames = getTableNames();
-        //System.out.println("tableNames:" + tableNames);
+    public static void main(String[] args) throws Exception{
 
-        //排除指定的表
-        //List<String> exceptTable = getExceptTable(tableNames, "data*");
-        for (String tableName : tableNames) {
+        //开始时间
+        long start = System.currentTimeMillis();
 
-            if (tableName.equals("databasechangelog")) {
-                //获取创建表的sql
-                StringBuilder sql = new StringBuilder();
-                sql.append("DROP TABLE IF EXISTS `" + tableName + "`;\n");
-                sql.append(getCreateTableSql(tableName) + ";\n");
-                sql.append("LOCK TABLES `" + tableName + "` WRITE;" + "\n");
-                sql.append(getInsertTableData(tableName) + "\n");
-                sql.append("UNLOCK TABLES;");
+        produceSqlFile("E:\\", "mysqlBack3.sql",
+                new String[]{"act_*", "yj_sys_*"}, "project_id", "121");
 
-                //生成sql.并写入到文件中
-                System.out.println(sql.toString() + "\n\n");
-               // FileUtils.writeFile(null,"sql5.sql",sql.toString());
-            }
+        //结束时间
+        long end = System.currentTimeMillis();
+        System.out.println("消耗时间为:" + ((end - start) / 1000) + "秒");
 
-
-        }
     }
+
 }
