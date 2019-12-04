@@ -30,9 +30,8 @@ public class GeneratorUtils {
             i = i.substring(i.lastIndexOf("\\")+1);
             try {
                 /**
-                 * 1.创建相关 java文件
-                 *      a.创建相关java类(包含，controller,service,mapper等)
-                 *      b.mybatis.xml需要读取实体信息后才能进行封装
+                 * 创建相关 java文件
+                 *      创建相关java类(包含，controller,service,mapper等)
                  */
                 CreateControllerOther.CreateFile(null,i,true);
 

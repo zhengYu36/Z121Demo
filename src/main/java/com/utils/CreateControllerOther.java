@@ -179,7 +179,7 @@ public class CreateControllerOther {
 
         //保存和修改
         sb.append(" 	public " + name + " saveOrUpdateEntry(String recordStr) throws Exception {\n\t");
-        sb.append("         objectMapper.setDateFormat(new SimpleDateFormat(\"yyyy-MM-dd HH:mm:ss\"));\n\t");
+        sb.append("         objectMapper.setDateFormat(new SimpleDateFormat(\"yyyy-MM-dd\"));\n\t");
         sb.append("         " + name + " record = objectMapper.readValue(new JSONObject(recordStr).toString(), " +
                 "" + name + ".class);\n\t");
         sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
@@ -261,7 +261,7 @@ public class CreateControllerOther {
         sb.append(" \n\t");
 
         //查询全部
-        sb.append(" 	List<" + name + "> queryList(" + name + " record);\n\t");
+        sb.append(" 	List<" + name + "> queryList(@Param(\"record\")\"" + name + " record);\n\t");
         sb.append(" \n\t");
 
         //查询全部分页

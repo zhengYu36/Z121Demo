@@ -4,7 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <ul>
@@ -30,12 +32,12 @@ public class GeneratorProduceMapperCRUD {
      * 的时候又没有，so，为了和以前的一样所有这样自定义了一个
      */
     //public static String[] REMOVE = {"createUserName", "editUserName", "serialVersionUID"};
-    public static String[] REMOVE = { "serialVersionUID"};
+    public static String[] REMOVE = {"serialVersionUID"};
 
     //生成oracle的sql语句的时候，需要固定在前面的属性 （这些属性都是固定的），排除它是为了保证它的位置在最前面,
     //提高可读性
-    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE", "CREATE_USER_ID", "CREATE_DATE","CREATE_USER_NAME",
-            "EDIT_USER_ID","EDIT_USER_NAME", "EDIT_DATE", "DELETE_FLAG", "MEMO"};
+    public static String[] ORACLEREMOVE = {"ID", "NAME", "CODE", "CREATE_USER_ID", "CREATE_DATE", "CREATE_USER_NAME",
+            "EDIT_USER_ID", "EDIT_USER_NAME", "EDIT_DATE", "DELETE_FLAG", "MEMO"};
 
     //schema 指定数据库
     public static String SCHEMANAME = "GZDTNEW";
@@ -80,7 +82,7 @@ public class GeneratorProduceMapperCRUD {
 
         //获取所有属性(包括父类的属性值)
         String superName = cmc.getSuperclass().getSimpleName();
-        if(superName.equals("BaseEntity")){
+        if (superName.equals("BaseEntity")) {
             ISOK = true;
         }
         Field[] allFields = FieldUtils.getAllFields(cmc);
@@ -96,7 +98,7 @@ public class GeneratorProduceMapperCRUD {
              * 这里排除的意思是说,在创建实体的时候在 createUserName
              * 但是在数据库中又不存在,我也不知道他们以前为什么要这样来
              * 设计,但是我最好和他们保持统一,但是这里写起还是有点坑,
-             * 有点傻叉
+             * 有点傻叉,还是要创建哈,方便查询
              */
             if (ISOK) {
                 boolean isflag = false;
@@ -122,7 +124,7 @@ public class GeneratorProduceMapperCRUD {
     public static String createMapperXML(String tableName, List<String> fields) throws Exception {
         StringBuffer str = new StringBuffer();
         //创建crud
-        //insert
+        //common
         String common = selectCommon(tableName, fields);
         str.append("\n--------------common start------------------\n");
         str.append(common);
@@ -141,12 +143,12 @@ public class GeneratorProduceMapperCRUD {
         str.append(update);
         str.append("\n--------------update   end------------------\n");
 
-        //创建select
-        String select = selectMethod(tableName, fields);
+        //创建select 返回的字段在最开头的上面
+/*        String select = selectMethod(tableName, fields);
         str.append("\n");
         str.append("\n--------------select  start------------------\n");
         str.append(select);
-        str.append("\n--------------select   end------------------\n");
+        str.append("\n--------------select   end------------------\n");*/
 
         //创建select list
         String selectList = selectListMethod(tableName, fields);
@@ -172,8 +174,10 @@ public class GeneratorProduceMapperCRUD {
         //创建sql语句 (需要使用自己的)
         String sql = "";
         if (ISOK) {
+            //继承了 BaseEntry 实体的,这样来创建是为了把 id等基本信息放到最开头
             sql = produceSqlMethod(SCHEMANAME, tableName, fields);
         } else {
+            //没有继承,根据实体里面的来进行生成
             sql = produceSqlMethodByOrig(SCHEMANAME, tableName, fields);
         }
 
@@ -204,8 +208,10 @@ public class GeneratorProduceMapperCRUD {
         str.append(" \"NAME\" VARCHAR2(4000),    \n");
         str.append(" \"CODE\" VARCHAR2(200),   \n");
         str.append(" \"CREATE_USER_ID\" VARCHAR2(20),    \n");
+        str.append(" \"CREATE_USER_NAME\" VARCHAR2(20),    \n");
         str.append(" \"CREATE_DATE\" DATE,    \n");
         str.append(" \"EDIT_USER_ID\" VARCHAR2(20),    \n");
+        str.append(" \"EDIT_USER_NAME\" VARCHAR2(20),    \n");
         str.append(" \"EDIT_DATE\" DATE,    \n");
         str.append(" \"DELETE_FLAG\" NUMBER(1,0),     \n");
         str.append(" \"MEMO\" VARCHAR2(4000),    \n");
@@ -302,10 +308,15 @@ public class GeneratorProduceMapperCRUD {
             String ss = it.next().toString();
             String[] split = ss.split("-");
             String sb = OneStringUtils.camelToUnderline(split[0].toString());
+
+            //如果字段有 _ 则需要用到as ,否则不需要用
             if (sb.contains("_")) {
-                sb = sb + " as " + split[0];
+                sb = "t." + sb + " as " + split[0]+",\n";
+            }else{
+                sb = "t." + sb + ", \n";
             }
-            sb = sb + ", \n";
+
+
             shows.append(sb);
         }
         //去掉最后一个 ，
@@ -326,7 +337,7 @@ public class GeneratorProduceMapperCRUD {
             String[] split = ss.split("-");
             String sb = OneStringUtils.camelToUnderline(split[0].toString());
             if (sb.contains("_")) {
-                sb = sb + " as " + split[0];
+                sb = "t." + sb + " as " + split[0];
             }
             sb = sb + ", \n";
             shows.append(sb);
@@ -382,7 +393,7 @@ public class GeneratorProduceMapperCRUD {
         StringBuffer str = new StringBuffer();
         str.append(" select \n ");
         str.append(" <include refid=\"record_column\"/> \n ");
-        str.append(" from " + tableName + "  \n ");
+        str.append(" from " + tableName + " t \n ");
         str.append(" where 1=1 \n ");
         return str.toString();
     }
@@ -391,7 +402,7 @@ public class GeneratorProduceMapperCRUD {
         StringBuffer str = new StringBuffer();
         str.append(" select \n ");
         str.append(" <include refid=\"record_column\"/> \n ");
-        str.append(" from " + tableName + " \n ");
+        str.append(" from " + tableName + " t \n ");
         str.append(" where id=#{id}  \n ");
         return str.toString();
     }

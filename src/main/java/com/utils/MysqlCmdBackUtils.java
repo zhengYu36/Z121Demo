@@ -32,7 +32,7 @@ public class MysqlCmdBackUtils {
         String path = "E:\\mysqlBack.sql";
         //restore("E:\\mysqlback\\back.sql", hostIp, "zy", userName, password);
         //restore(path, hostIp, "szyj2", userName, "123456");
-        restore2(path, hostIp, "szyj2", userName, "123456");
+        restore2(path, hostIp, "zy3", "root", "123456");
 
     }
 
@@ -137,10 +137,14 @@ public class MysqlCmdBackUtils {
                     "utf-8");
             //用缓存流进行数据的传输
             //这样不会出现内存溢出的问题
-            BufferedWriter bw = new BufferedWriter(writer,1020 * 1024 * 200);
+            BufferedWriter bw = new BufferedWriter(writer,1024 * 1024 * 200);
             String str = null;
             while ((str = br.readLine()) != null) {
                 bw.write(str);
+            }
+
+            if (process.waitFor() == 0) {// 0 表示线程正常终止。
+                isok = true;
             }
 
             bw.flush();
@@ -148,7 +152,8 @@ public class MysqlCmdBackUtils {
             writer.close();
             outputStream.close();
             br.close();
-            isok = true;
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
