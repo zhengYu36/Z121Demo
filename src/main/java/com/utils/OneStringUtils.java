@@ -68,6 +68,9 @@ public class OneStringUtils {
         if ("class java.lang.Float".equals(typeName)) {
             ss = "float";
         }
+        if ("class java.math.BigDecimal".equals(typeName)) {
+            ss = "bigDecimal";
+        }
         str.append(ss);
 
         return str.toString();
@@ -83,7 +86,7 @@ public class OneStringUtils {
            oracleType = "VARCHAR";
        }
        if("int".equals(jdbcType) || "double".equals(jdbcType)
-               || "float".equals(jdbcType)|| "boolean".equals(jdbcType)){
+               || "float".equals(jdbcType)|| "boolean".equals(jdbcType) || "bigDecimal".equals(jdbcType)){
             oracleType = "NUMERIC";
        }
        if("date".equals(jdbcType)){
@@ -103,7 +106,7 @@ public class OneStringUtils {
         if("string".equals(jdbcType)){
             oracleType = "VARCHAR2(255)";
         }
-        if("int".equals(jdbcType) || "double".equals(jdbcType) || "float".equals(jdbcType)){
+        if("int".equals(jdbcType) || "double".equals(jdbcType) || "float".equals(jdbcType) || "bigDecimal".equals(jdbcType)){
             //整数部位有几位，小数部位有几位
             //如果默认没有指定，那么就会获取最大值，
             // 所有目前我们可以暂时设定一些数据的方式

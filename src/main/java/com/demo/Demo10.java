@@ -1,7 +1,7 @@
 package com.demo;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.text.DecimalFormat;
 
 /**
  * <ul>
@@ -15,25 +15,22 @@ import java.util.List;
  *
  * @author zhengyu
  */
+// add{new Student("111",22,"22")};
 public class Demo10 {
+
+
     public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
+        double comp = 112.3d;
 
-        int page = 2;
-        int count = 3;
+        //double comp = 0;
+        double total = 234.33d;
 
-        int size = list.size();
-        int fromIndex = count * (page - 1);
-        int toIndex = fromIndex + count;
-        if (toIndex >= size) {
-            toIndex = size;
-        }
+        DecimalFormat df = new DecimalFormat("0.00");
+        double v = (comp / total) * 100;
+        System.out.println(v);
+        System.out.println(df.format((comp / total) * 100));
+        System.out.println(df.format(v));
 
-        System.out.println(list.subList(fromIndex, toIndex));
     }
+
 }

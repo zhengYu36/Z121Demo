@@ -10,6 +10,8 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+    <context:component-scan base-package="com.zy.*" />
+
     <!-- 引入jdbc配置文件 -->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -72,7 +74,7 @@
     <tx:annotation-driven transaction-manager="txManager"/>
 
     <!-- 自动扫描注解的bean,这里只是关于服务层的注入,controller层是在 springmvc.xml中注入的，这样就不会互相影响了 -->
-    <context:component-scan base-package="com.zy.service,com.zy.quartz"/>
+    <!--<context:component-scan base-package="com.zy.service,com.zy.quartz"/>-->
 
 
 <!--
@@ -87,17 +89,17 @@
 -->
 
     <!-- 定时器配置-->
-    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
-    <bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"></bean>
+<!--    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
+    <bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"></bean>-->
 
 
     <!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
     <!-- 如果配置了这个那么 modelandview就会失效 -->
-    <!--<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="ignoreAcceptHeader" value="true" />
         <property name="defaultContentType" value="text/html" />
 
-        &lt;!&ndash; 扩展名至mimeType的映射,即 /user.json => application/json &ndash;&gt;
+        <!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json" />
@@ -105,7 +107,7 @@
                 <entry key="xml" value="application/xml" />
             </map>
         </property>
-        &lt;!&ndash; 用于开启 /userinfo/123?format=json 的支持 &ndash;&gt;
+        <!-- 用于开启 /userinfo/123?format=json 的支持 -->
         <property name="favorParameter" value="false" />
         <property name="viewResolvers">
             <list>
@@ -121,7 +123,7 @@
         </property>
         <property name="defaultViews">
             <list>
-                &lt;!&ndash; for application/json &ndash;&gt;
+                <!-- for application/json -->
                 <bean
                         class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
                     <property name="objectMapper">
@@ -137,13 +139,13 @@
                 </bean>
             </list>
         </property>
-    </bean>-->
-
-
-    <bean id="bBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.B"/>
-    <bean id="aBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.A">
-       <!-- <property name="bClass" ref="bBean"/>-->
     </bean>
+
+
+ <!--   <bean id="bBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.B"/>
+    <bean id="aBean" class="com.yanjoy.scbim.mp.entity.hiddenDanger.A">
+       &lt;!&ndash; <property name="bClass" ref="bBean"/>&ndash;&gt;
+    </bean>-->
 
 
 

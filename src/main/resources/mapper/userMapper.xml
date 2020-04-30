@@ -7,10 +7,18 @@
         <id column="USER_ID" property="userId" jdbcType="INTEGER"/>
         <result column="USER_NAME" property="userName" jdbcType="CHAR"/>
         <result column="USER_PASSWORD" property="userPassword" jdbcType="CHAR"/>
+       <!-- <result column="BLOB_D" property="blobD" jdbcType="BLOB" />
+        <result column="SCORE" property="score" jdbcType="DECIMAL" />
+        <result column="BIRTHDAY" property="birthday" jdbcType="DATE" />
+        <result column="AVG" property="avg" jdbcType="DECIMAL" />-->
     </resultMap>
     <!-- 查询单条记录 -->
     <select id="selectUserById" parameterType="int" resultMap="BaseResultMap">
 		SELECT * FROM User WHERE USER_ID = #{userId}
+	</select>
+
+    <select id="selectUserById2" parameterType="int" resultMap="BaseResultMap">
+        select * from user_info t1 left join user t2 on t1.id = t2.USER_ID
 	</select>
 
     <!-- 根据实体来查询 -->
@@ -39,4 +47,13 @@
         insert into user(USER_ID,USER_NAME,USER_PASSWORD)
         values(#{userId},#{userName},#{userPassword})
      </insert>
+
+    <select id="queryList2" resultType= "map" parameterType="com.zy.domain.User">
+        select
+         USER_ID as userId,
+         USER_NAME as userName,
+         BLOB_D as blobd
+         from User where 1=1
+    </select>
+
 </mapper>

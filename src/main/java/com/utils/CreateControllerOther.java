@@ -89,6 +89,17 @@ public class CreateControllerOther {
         sb.append(" 	}\n\t");
         sb.append(" 	\n\t");
 
+        //保存和更新list
+        sb.append(" 	@RequestMapping(value=\"/saveOrUpdateEntryList\")\n\t");
+        sb.append(" 	public ModelAndView saveOrUpdateEntryList(String recordInfos) throws Exception{\n\t");
+        sb.append("         ModelAndView result = new ModelAndView();\n\t");
+        sb.append("         State state = new State(\"0\");\n\t");
+        sb.append("         result.addObject(\"data\", service.saveOrUpdateEntryList(recordInfos));\n\t");
+        sb.append("         result.addObject(\"state\", state);\n\t");
+        sb.append(" 		return result;\n\t");
+        sb.append(" 	}\n\t");
+        sb.append(" 	\n\t");
+
         //查询全部返回一个list
         sb.append(" 	@RequestMapping(value=\"/queryList\")\n\t");
         sb.append(" 	public ModelAndView queryList(" + name + " record) throws Exception{\n\t");
@@ -164,6 +175,8 @@ public class CreateControllerOther {
         String str3 = name + "Mapper";
 
         sb = new StringBuilder();
+        sb.append("import com.fasterxml.jackson.core.type.TypeReference;\n");
+        sb.append("import org.json.JSONArray;\n");
         sb.append("import org.json.JSONObject;\n");
         sb.append("import java.text.SimpleDateFormat;\n");
         sb.append("import java.util.List;\n");
@@ -200,6 +213,37 @@ public class CreateControllerOther {
         sb.append(" 		return record;\n\t");
         sb.append(" 	}\n\t");
         sb.append(" 	\n\t");
+
+
+        //保存和修改list
+        sb.append("     @Transactional\n\t");
+        sb.append(" 	public List<" + name + "> saveOrUpdateEntryList(String recordStr) throws Exception {\n\t");
+        sb.append("         objectMapper.setDateFormat(new SimpleDateFormat(\"yyyy-MM-dd\"));\n\t");
+        sb.append("         List<" + name + "> list = objectMapper.readValue(new JSONArray(recordStr).toString()," +
+                "new TypeReference<List<" + name + ">>() {});\n\t");
+
+        sb.append("         for (int i = 0; i < list.size(); i++) {");
+
+        sb.append(""+name+" record = list.get(i);");
+        sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
+        if(isok){
+            sb.append("             record.setEditUserId(getUserId());\n\t");
+            sb.append("             record.setEditUserName(getUserName());\n\t");
+            sb.append("             record.setEditDate(new Date());\n\t");
+        }
+        sb.append("             mapper.updateRecord(record);\n\t");
+        sb.append("         } else {\n\t");
+        if(isok){
+            sb.append("             record.setCreateUserId(getUserId());\n\t");
+            sb.append("             record.setCreateUserName(getUserName());\n\t");
+            sb.append("             record.setCreateDate(new Date());\n\t");
+        }
+        sb.append("             mapper.saveRecord(record);\n\t");
+        sb.append("         }\n\t");
+        sb.append(" 	}\n\t");
+        sb.append(" 	\n\t");
+        sb.append(" 		return list;\n\t");
+        sb.append("}");
 
         //查询全部
         sb.append(" 	public List<" + name + "> queryList(" + name + " record) {\n\t");
@@ -261,7 +305,7 @@ public class CreateControllerOther {
         sb.append(" \n\t");
 
         //查询全部
-        sb.append(" 	List<" + name + "> queryList(@Param(\"record\")\"" + name + " record);\n\t");
+        sb.append(" 	List<" + name + "> queryList(@Param(\"record\")" + name + " record);\n\t");
         sb.append(" \n\t");
 
         //查询全部分页
@@ -269,7 +313,7 @@ public class CreateControllerOther {
         sb.append(" \n\t");
 
         //根据查询某个数据
-        sb.append(" 	" + name + " queryRecordById(String record);\n\t");
+        sb.append(" 	" + name + " queryRecordById(String id);\n\t");
         sb.append(" \n\t");
 
         //删除
@@ -299,10 +343,24 @@ public class CreateControllerOther {
      * @Param: selectById
      * @Param: delete
      * @return java.lang.String
+     *
+     * 注意，这里的dao名称，和相关返回的实体类都是key都可以自定义，如果少
+     * 自己还可以慢慢写，但是如果多，就非常难得写了
      */
     public static String mapperXMLTemple(String commonField, String insert,
                                          String update, String selectList,
                                          String selectById, String delete) throws Exception {
+
+        //很多时候就可以写到这里哈
+        String namespace = "";
+        String entryPath = "";
+        if(StringUtils.isEmpty(namespace)){
+            namespace =  "com.yanjoy.scbim.mp.dao.earlyWork." + name + "Mapper";
+        }
+
+        if(StringUtils.isEmpty(entryPath)){
+            entryPath = "com.yanjoy.scbim.mp.entity.earlyWork." + name + "";
+        }
 
         StringBuilder sb = null;
         String str4 = name + "Mapper";
@@ -312,7 +370,7 @@ public class CreateControllerOther {
         sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis" +
                 ".org/dtd/mybatis-3-mapper.dtd\">\n\t");
         sb.append(" \n\n");
-        sb.append("<mapper namespace=\"com.yanjoy.scbim.mp.dao.manager." + name + "Mapper\">");
+        sb.append("<mapper namespace=\"" + namespace + "\">");
         sb.append(" \n\t");
         sb.append(" \n\t");
 
@@ -323,32 +381,31 @@ public class CreateControllerOther {
         sb.append(" \n\t");
 
         //新增
-        sb.append(" 	<insert id=\"saveRecord\" parameterType=\"com.yanjoy.scbim.mp.entity.manager." + name +
-                "\">\n\t");
+        sb.append(" 	<insert id=\"saveRecord\" parameterType=\"" + entryPath +"\">\n\t");
         sb.append(" 	    "+insert+"\n\t");
         sb.append(" 	</insert>\n\t");
         sb.append(" \n\t");
 
         //更新
-        sb.append(" 	<update id=\"updateRecord\" parameterType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
+        sb.append(" 	<update id=\"updateRecord\" parameterType=\"" + entryPath +"\">\n\t");
         sb.append(" 	    "+update+"\n\t");
         sb.append(" 	</update>\n\t");
         sb.append(" \n\t");
 
         //查询全部
-        sb.append(" 	<select id=\"queryList\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
+        sb.append(" 	<select id=\"queryList\" resultType=\"" + entryPath +"\">\n\t");
         sb.append(" 	    "+selectList+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");
 
         //查询全部分页
-        sb.append(" 	<select id=\"queryListPage\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
+        sb.append(" 	<select id=\"queryListPage\" resultType=\"" + entryPath +"\">\n\t");
         sb.append(" 	    "+selectList+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");
 
         //根据id查询具体数据
-        sb.append(" 	<select id=\"queryRecordById\" resultType=\"com.yanjoy.scbim.mp.entity.manager." + name + "\">\n\t");
+        sb.append(" 	<select id=\"queryRecordById\" resultType=\"" + entryPath +"\">\n\t");
         sb.append(" 	    "+selectById+"\n\t");
         sb.append(" 	</select>\n\t");
         sb.append(" \n\t");

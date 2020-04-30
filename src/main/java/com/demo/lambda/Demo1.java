@@ -1,7 +1,5 @@
 package com.demo.lambda;
 
-import java.util.Timer;
-
 /**
  * <ul>
  * <li>文件包名 : com.demo.lambda</li>
@@ -13,9 +11,8 @@ import java.util.Timer;
  * @author zhengyu
  */
 public class Demo1 {
-    public static void main(String[] args) {
-        Timer t = new Timer();
-        System.out.println();
-        // t.scheduleAtFixedRate(new TimerTask() -> System.out.println("dsgsdg"), 100, 100);
-    }
+   private String name;
+
+   // alt + enter是提示
+    // alt + insert 是插入
 }

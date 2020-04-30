@@ -1,23 +1,33 @@
 package com.zy.domain;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.mysql.jdbc.Blob;
 
-import java.util.Collection;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
-public class User implements  UserDetails {
+public class User implements Serializable{
 
     private Integer userId;
     private String userName;
     private String userPassword;
+    private Blob blobD;
+    private BigDecimal score;
+    private Date birthday;
+    private BigDecimal avg;
 
     public User() {
+
     }
 
-    public User(Integer userId, String userName, String userPassword) {
+    public User(Integer userId, String userName, String userPassword, Blob blobD, BigDecimal score, Date birthday, BigDecimal avg) {
         this.userId = userId;
         this.userName = userName;
         this.userPassword = userPassword;
+        this.blobD = blobD;
+        this.score = score;
+        this.birthday = birthday;
+        this.avg = avg;
     }
 
     public Integer getUserId() {
@@ -44,38 +54,35 @@ public class User implements  UserDetails {
         this.userPassword = userPassword;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public Blob getBlobD() {
+        return blobD;
     }
 
-    @Override
-    public String getPassword() {
-        return null;
+    public void setBlobD(Blob blobD) {
+        this.blobD = blobD;
     }
 
-    @Override
-    public String getUsername() {
-        return null;
+    public BigDecimal getScore() {
+        return score;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public void setScore(BigDecimal score) {
+        this.score = score;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
+    public Date getBirthday() {
+        return birthday;
     }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public BigDecimal getAvg() {
+        return avg;
+    }
+
+    public void setAvg(BigDecimal avg) {
+        this.avg = avg;
     }
 }

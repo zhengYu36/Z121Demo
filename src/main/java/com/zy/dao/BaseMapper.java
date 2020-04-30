@@ -1,7 +1,5 @@
 package com.zy.dao;
 
-import java.util.List;
-
 /**
  * <ul>
  * <li>文件包名 : com.zy.dao</li>
@@ -14,9 +12,9 @@ import java.util.List;
  */
 public interface BaseMapper<T> {
 
-    void save(T t);
+    /*void save(T t);
 
     T findById(String id);
 
-    List<T> queryList(T t);
+    List<T> queryList(T t);*/
 }

@@ -30,7 +30,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> queryList(User user) {
-        return userDao.queryList(user);
+        System.out.println("00000000");
+        //List<User> users = userDao.queryList(user);
+        userDao.queryList2();
+        System.out.println("11111");
+        return null;
     }
 
 
@@ -41,13 +45,13 @@ public class UserServiceImpl implements UserService {
     //测试事物
     @Transactional(rollbackFor = Exception.class)
     public void ope() {
-        //模拟数据
+       /* //模拟数据
         User user = new User(1003, "ttt", "22222");
         //插入
         insertUser(user);
         //修改
         User user1 = new User(1003, "ttt3333", "22222");
-        updateUserById(user1);
+        updateUserById(user1);*/
         //抛出异常
        /* if (1 > 0) {
             System.out.println("cccc");

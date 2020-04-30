@@ -84,6 +84,8 @@ public class GeneratorProduceMapperCRUD {
         String superName = cmc.getSuperclass().getSimpleName();
         if (superName.equals("BaseEntity")) {
             ISOK = true;
+        }else{
+            ISOK = false;
         }
         Field[] allFields = FieldUtils.getAllFields(cmc);
         //// 判断是否是继承的,如果是,则需要排除默写字段 start
@@ -171,7 +173,7 @@ public class GeneratorProduceMapperCRUD {
         str.append(delete);
         str.append("\n--------------delete   end------------------\n");
 
-        //创建sql语句 (需要使用自己的)
+        //创建sql语句 (需要使用自己的,输出到控制台，然后在navicat中去执行)
         String sql = "";
         if (ISOK) {
             //继承了 BaseEntry 实体的,这样来创建是为了把 id等基本信息放到最开头

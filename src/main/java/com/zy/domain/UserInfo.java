@@ -1,7 +1,6 @@
 package com.zy.domain;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -19,7 +18,6 @@ public class UserInfo implements Serializable {
     @Min(value = 12)
     private Integer id;
 
-    @NotBlank(message = "密码不能为空")
     private String name;
     private String realName;
 

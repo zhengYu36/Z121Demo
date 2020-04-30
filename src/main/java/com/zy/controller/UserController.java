@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.io.*;
 import java.rmi.ServerException;
 import java.util.ArrayList;
@@ -401,19 +399,18 @@ public class UserController {
     @ResponseBody
     public String update10(UserInfo userInfo) {
         //Strx;
-        zhengDao.save(userInfo);
+        //zhengDao.save(userInfo);
         return "ok";
     }
 
-    //验证参数,通过注解的方式
-    @RequestMapping("/aa/validParam")
-    @ResponseBody
-    public String validParam(@Valid UserInfo userInfo, BindingResult bErrors) {
 
-        System.out.println("valid param");
-        if (bErrors.hasErrors()) {
-            return "fail";
-        }
+    @RequestMapping("/validBlob")
+    @ResponseBody
+    public String validBlob() {
+        User user = new User();
+        user.setUserId(40012);
+        List<User> users = userService.queryList(user);
+        System.out.println("users is length:"+users.size());
         return "ok";
     }
 

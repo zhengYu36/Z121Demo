@@ -13,22 +13,22 @@
         <intercept-url pattern="/**" access="ROLE_USER"/>
     </http>
 
-    <authentication-manager>
-       <!-- <authentication-provider>
+    <!--<authentication-manager>
+       &lt;!&ndash; <authentication-provider>
         <user-service>
             <user name="yiibai" password="123456" authorities="ROLE_USER"/>
         </user-service>
-        </authentication-provider>-->
-        <!-- 通过数据库去访问 -->
+        </authentication-provider>&ndash;&gt;
+        &lt;!&ndash; 通过数据库去访问 &ndash;&gt;
         <authentication-provider user-service-ref="userDetailsManager">
             <password-encoder hash="md5">
-                <!--<salt-source user-property="prefix"/>-->
+                &lt;!&ndash;<salt-source user-property="prefix"/>&ndash;&gt;
             </password-encoder>
         </authentication-provider>
     </authentication-manager>
 
-    <!-- 用户详细信息管理：数据源、用户缓存（通过数据库管理用户、角色、权限、资源）。 -->
-    <beans:bean id="userDetailsManager" class="com.zy.service.MyUserDetailsService"/>
+    &lt;!&ndash; 用户详细信息管理：数据源、用户缓存（通过数据库管理用户、角色、权限、资源）。 &ndash;&gt;
+    <beans:bean id="userDetailsManager" class="com.zy.service.MyUserDetailsService"/>-->
 
 </beans:beans>
 

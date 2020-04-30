@@ -1,3 +1,4 @@
+/*
 package com.zy.service;
 
 import com.zy.dao.UserDao;
@@ -25,10 +26,11 @@ public class MyUserDetailsService implements UserDetailsService {
         List<User> users = userService.queryList(user);
         if(users !=null && users.size() > 0){
 
-            return users.get(0);
+            //return users.get(0);
         }
 
     return null;
         //return user;
     }
 }
+*/

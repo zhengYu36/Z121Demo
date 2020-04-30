@@ -1,6 +1,7 @@
 package com.utils;
 
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -269,6 +270,86 @@ public class DateUtil {
         int week_of_year = c.get(Calendar.WEEK_OF_YEAR);
         return week_of_year;
     }
+
+
+    //输入月份求该月由哪些周组成 (重要)
+    public static void printfWeeks(String date) throws Exception {
+        // String date = "2013-09";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+        Date date1 = dateFormat.parse(date);
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date1);
+        int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        System.out.println("days:" + days);
+        int count = 0;
+        for (int i = 1; i <= days; i++) {
+            DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date2 = dateFormat1.parse(date + "-" + i);
+            calendar.clear();
+            calendar.setTime(date2);
+            int k = new Integer(calendar.get(Calendar.DAY_OF_WEEK));
+            if (k == 1) {// 若当天是周日
+                count++;
+                System.out.println("-----------------------------------");
+                System.out.println("第" + count + "周");
+                if (i - 6 <= 1) {
+                    System.out.println("本周开始日期:" + date + "-" + 1);
+                } else {
+                    System.out.println("本周开始日期:" + date + "-" + (i - 6));
+                }
+                System.out.println("本周结束日期:" + date + "-" + i);
+                System.out.println("-----------------------------------");
+            }
+            if (k != 1 && i == days) {// 若是本月最好一天，且不是周日
+                count++;
+                System.out.println("-----------------------------------");
+                System.out.println("第" + count + "周");
+                System.out.println("本周开始日期:" + date + "-" + (i - k + 2));
+                System.out.println("本周结束日期:" + date + "-" + i);
+                System.out.println("-----------------------------------");
+            }
+        }
+    }
+
+    public static void printfWeeks2(String date,String startDate,String endDate) throws Exception {
+        // String date = "2013-09";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+        Date date1 = dateFormat.parse(date);
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date1);
+        int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        System.out.println("days:" + days);
+        int count = 0;
+
+        for (int i = 1; i <= days; i++) {
+            DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date2 = dateFormat1.parse(date + "-" + i);
+            calendar.clear();
+            calendar.setTime(date2);
+            int k = new Integer(calendar.get(Calendar.DAY_OF_WEEK));
+            if (k == 1) {// 若当天是周日
+                count++;
+                System.out.println("-----------------------------------");
+                System.out.println("第" + count + "周");
+                if (i - 6 <= 1) {
+                    System.out.println("本周开始日期:" + date + "-" + 1);
+                } else {
+                    System.out.println("本周开始日期:" + date + "-" + (i - 6));
+                }
+                System.out.println("本周结束日期:" + date + "-" + i);
+                System.out.println("-----------------------------------");
+            }
+            if (k != 1 && i == days) {// 若是本月最好一天，且不是周日
+                count++;
+                System.out.println("-----------------------------------");
+                System.out.println("第" + count + "周");
+                System.out.println("本周开始日期:" + date + "-" + (i - k + 2));
+                System.out.println("本周结束日期:" + date + "-" + i);
+                System.out.println("-----------------------------------");
+            }
+        }
+    }
+
 
     /**
      * getWeekBeginAndEndDate
@@ -647,8 +728,8 @@ public class DateUtil {
         long time1 = 0;
         long time2 = 0;
 
-        try {
-            cal.setTime(parseDate(startDate, "yyyy-MM-dd"));
+        try {   cal.setTime(parseDate(startDate, "yyyy-MM-dd"));
+
             time1 = cal.getTimeInMillis();
             cal.setTime(parseDate(endDate, "yyyy-MM-dd"));
             time2 = cal.getTimeInMillis();
@@ -922,6 +1003,75 @@ public class DateUtil {
         }
 
         return resultMap;
+    }
+
+
+    public static int getWeek(String str) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(str);
+        Calendar calendar = Calendar.getInstance();
+        //这个是关键哈.
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);//设置星期一为一周的第一天
+        calendar.setTime(date);
+        //第几周
+        int week = calendar.get(Calendar.WEEK_OF_MONTH);
+        //第几天，从周日开始
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        return week;
+    }
+
+    public static int getWeek(Date str) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = str;
+        Calendar calendar = Calendar.getInstance();
+        //这个是关键哈.
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);//设置星期一为一周的第一天
+        calendar.setTime(date);
+        //第几周
+        int week = calendar.get(Calendar.WEEK_OF_MONTH);
+        //第几天，从周日开始
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        return week;
+    }
+
+
+    //根据时间和类型返回具体的时间
+    public static String getDateInfo( Date date, String dateType) throws Exception {
+        //根据 0=自定义(这里取的就是天) 1=本周，2=本月，3=本季，4=本年,返回具体的天数是什么
+        int info = 0;
+        String infoStr ="";
+        switch (dateType) {
+            case "0":
+                //info = TimeDateUtils.getDay(date);
+                //infoStr = info + "日";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+                infoStr = sdf.format(date);
+                break;
+            case "1":
+                //info = DateUtil.getWeek(date);
+                //infoStr = info + "周";
+                infoStr = TimeDateUtils.getYear(date) + "年" +
+                        TimeDateUtils.getMonth(date) + "月" +
+                        DateUtil.getWeek(date) +"周";
+                break;
+            case "2":
+                //info = TimeDateUtils.getMonth(date);
+                //infoStr = info + "月";
+                infoStr = TimeDateUtils.getYear(date) + "年" +
+                            TimeDateUtils.getMonth(date) + "月";
+                break;
+            case "3":
+                //info = TimeDateUtils.getSeason(date);
+                //infoStr = info + "季度";
+                infoStr = TimeDateUtils.getYear(date) + "年" +
+                          TimeDateUtils.getSeason(date) +"季度";
+                break;
+            case "4":
+                info = TimeDateUtils.getYear(date);
+                infoStr = info + "年";
+                break;
+        }
+        return infoStr;
     }
 
 }

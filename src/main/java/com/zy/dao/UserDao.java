@@ -4,6 +4,7 @@ import com.zy.domain.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserDao {
 
@@ -13,6 +14,8 @@ public interface UserDao {
      * 根据id查询数据
      */
     User selectUserById(Integer userId);
+
+    User selectUserById2(Integer userId);
 
     //根据实体插入数据
     int insertUser(User user);
@@ -27,5 +30,8 @@ public interface UserDao {
 
 
     List<User> queryList(@Param("user")User user);
+
+
+    List<Map> queryList2();
 
 }

@@ -1,12 +1,15 @@
 package com.zy.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.utils.BasicJBZRestConfig;
 import com.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import peccancy.AlarmPush;
 import peccancy.CapturePush;
@@ -42,6 +45,14 @@ public class restTemplateController {
         String str = restTemplate.postForObject("http://localhost:8080/scbim/6245721945602523136/server/alarmPush/saveInfo.json",
                 httpEntity, String.class);
         System.out.println(str);
+
+
+        // 这里是来测试调用删除接口,看是否有问题.
+        System.out.println("11111");
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(null, headers);
+        restTemplate.exchange("https://api.jpush.cn/v3/push/2251844058555858", HttpMethod.DELETE,request,
+                JSONArray.class);
+        System.out.println("2222");
 
     }
 

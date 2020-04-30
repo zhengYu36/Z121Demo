@@ -16,8 +16,9 @@ import java.util.List;
  * @author zhengyu
  */
 public class GeneratorUtils {
-    //private static String packName = "com.yanjoy.scbim.mp.entity.manager";
-    private static String packName = "temp";
+    //private static String packName = "com.yanjoy.scbim.mp.entity.monitor";
+    private static String packName = "measure.management";
+    public static String SCHEMANAME = "GZDT11BETA";
 
     public static void main(String[] args) throws Exception{
 
@@ -43,7 +44,7 @@ public class GeneratorUtils {
 
                 //2.创建xml (xml需要额外创建) 和 sql输出
                 //默认不排除额外的属性,
-                GeneratorProduceMapperCRUD.createSql(packName+"."+i,null,tableName);
+                GeneratorProduceMapperCRUD.createSql(packName+"."+i,SCHEMANAME,tableName);
 
             } catch (Exception e) {
                 e.printStackTrace();
