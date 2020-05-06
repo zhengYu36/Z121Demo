@@ -205,7 +205,8 @@ public class GeneratorProduceMapperCRUD {
         //这里为什么要单独提出来这里是为了在创建sql的时候，方便查询，因为目前该表这些
         //字段都是公共的，并且都是位置一致，为了方便，所以需要固定住
         //其他的字段的长度需要自己去手动定义数据，因为长度这些是需要自定义的，不能固定死
-        str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
+        //str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
+        str.append(" CREATE TABLE \"" + tableName + "\"  ( \n");
         str.append(" \"ID\" VARCHAR2(20) NOT NULL ENABLE,    \n");
         str.append(" \"NAME\" VARCHAR2(4000),    \n");
         str.append(" \"CODE\" VARCHAR2(200),   \n");
@@ -245,7 +246,8 @@ public class GeneratorProduceMapperCRUD {
 
     public static String produceSqlMethodByOrig(String schema, String tableName, List<String> fields) {
         StringBuffer str = new StringBuffer();
-        str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
+        //str.append(" CREATE TABLE \"" + schema + "\".\"" + tableName + "\"  ( \n");
+        str.append(" CREATE TABLE \"" + tableName + "\"  ( \n");
         //循环迭代数据
         for (int i = 0; i < fields.size(); i++) {
             String[] split = fields.get(i).split("-");

@@ -23,6 +23,10 @@ public class CreateControllerOther {
     public static String PATH = "D:/javaTemplate/";
     public static String name = "ManagerProjectPlan";
 
+    //这里在写入 xml文件中是关于雷鸣或是其他
+    public static String namespaceTitle = "com.yanjoy.scbim.mp.dao.qualityManager.";
+    public static String entryPathTitle = "com.yanjoy.scbim.mp.entity.qualityManager.";
+
     public static void main(String[] args) throws Exception {
         CreateFile(PATH,name,true);
     }
@@ -355,11 +359,11 @@ public class CreateControllerOther {
         String namespace = "";
         String entryPath = "";
         if(StringUtils.isEmpty(namespace)){
-            namespace =  "com.yanjoy.scbim.mp.dao.earlyWork." + name + "Mapper";
+            namespace =  namespaceTitle + name + "Mapper";
         }
 
         if(StringUtils.isEmpty(entryPath)){
-            entryPath = "com.yanjoy.scbim.mp.entity.earlyWork." + name + "";
+            entryPath = entryPathTitle + name + "";
         }
 
         StringBuilder sb = null;
