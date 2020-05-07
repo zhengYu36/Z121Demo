@@ -226,9 +226,9 @@ public class CreateControllerOther {
         sb.append("         List<" + name + "> list = objectMapper.readValue(new JSONArray(recordStr).toString()," +
                 "new TypeReference<List<" + name + ">>() {});\n\t");
 
-        sb.append("         for (int i = 0; i < list.size(); i++) {");
+        sb.append("         for (int i = 0; i < list.size(); i++) {\n\t");
 
-        sb.append(""+name+" record = list.get(i);");
+        sb.append(""+name+" record = list.get(i);\n\t");
         sb.append("         if (StringUtils.isNotBlank(record.getId())) {\n\t");
         if(isok){
             sb.append("             record.setEditUserId(getUserId());\n\t");
